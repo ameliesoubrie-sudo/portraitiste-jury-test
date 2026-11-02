@@ -327,7 +327,7 @@ function logout(){
 /* ================= CADRE ================= */
 function shell(navItems, active, body){
   const s = S.session;
-  const who = s.role === "admin" ? "Super admin" : s.role === "admin_simple" ? `Admin · ${esc(s.admin.nom)}` : `${esc(s.juge.prenom)} ${esc(s.juge.nom)}${s.juge.president ? " <b>· Président du jury</b>" : ""}`;
+  const who = s.role === "admin" ? `Super admin · ${esc(s.nom||"")}` : s.role === "admin_simple" ? `Admin · ${esc(s.admin.nom)}` : `${esc(s.juge.prenom)} ${esc(s.juge.nom)}${s.juge.president ? " <b>· Président du jury</b>" : ""}`;
   return `
   <header class="top">
     <div class="brand"><img src="${LOGO}" alt="FFPMI"><div class="display">Portraitiste de France <span>2027</span></div></div>

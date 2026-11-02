@@ -20,9 +20,9 @@ Deno.serve(async (req) => {
     const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
     // Contrôle d'accès : administrateur ou président du jury
-    const { data: adm } = await db.from("parametres").select("valeur").eq("cle", "code_admin").single();
+    const { data: estAdmin } = await db.rpc("_est_admin", { p_code: String(code || "") });
     let demandeur = "admin";
-    if (!adm || adm.valeur !== c) {
+    if (!estAdmin) {
       const { data: j } = await db.from("juges").select("prenom,nom,est_president,actif").eq("code", c).maybeSingle();
       if (!j || !j.est_president || !j.actif) return json({ error: "Accès réservé au président du jury" }, 403);
       demandeur = `${j.prenom} ${j.nom}`;

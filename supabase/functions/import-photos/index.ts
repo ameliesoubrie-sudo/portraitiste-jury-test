@@ -47,8 +47,8 @@ Deno.serve(async (req) => {
   try {
     const { code, lot, relancer_erreurs } = await req.json();
     const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const { data: adm } = await db.from("parametres").select("valeur").eq("cle", "code_admin").single();
-    if (!adm || adm.valeur !== String(code || "").trim().toUpperCase()) return json({ error: "Code administrateur invalide" }, 403);
+    const { data: estAdmin } = await db.rpc("_est_admin", { p_code: String(code || "") });
+    if (!estAdmin) return json({ error: "Code administrateur invalide" }, 403);
 
     if (relancer_erreurs) await db.from("photos").update({ import_erreur: null }).not("import_erreur", "is", null);
     const taille = Math.min(Number(lot) || 12, 30);

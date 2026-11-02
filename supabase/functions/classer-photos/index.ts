@@ -24,8 +24,8 @@ Deno.serve(async (req) => {
     const { code, dossier_id, forcer } = await req.json();
     const url = Deno.env.get("SUPABASE_URL")!;
     const db = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
-    const { data: adm } = await db.from("parametres").select("valeur").eq("cle", "code_admin").single();
-    if (!adm || adm.valeur !== String(code || "").trim().toUpperCase()) return json({ error: "Code administrateur invalide" }, 403);
+    const { data: estAdmin } = await db.rpc("_est_admin", { p_code: String(code || "") });
+    if (!estAdmin) return json({ error: "Code administrateur invalide" }, 403);
     const key = Deno.env.get("ANTHROPIC_API_KEY");
     if (!key) return json({ error: "Clé API Claude non configurée (secret ANTHROPIC_API_KEY)" }, 500);
 
