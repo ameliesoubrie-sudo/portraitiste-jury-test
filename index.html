@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portraitiste de France 2027 - Jury</title>
+<link rel="icon" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800;900&family=Montserrat:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --teal:#8BCDC6; --green:#9BC55E; --brown:#655244; --orange:#E05722; --yellow:#F8B135; --grey:#727F87;
+  --ink:#231f1c; --paper:#faf7f2; --line:#e6e0d6; --muted:#7d766d;
+  --dark:#1b1b1d; --dark2:#26262a; --dark3:#323238; --darkline:#3c3c43;
+  --r:18px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:Montserrat,system-ui,sans-serif;font-size:15px;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+.display{font-family:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;font-weight:900;letter-spacing:.01em;line-height:.9;text-transform:uppercase}
+.mono{font-family:"Space Mono",monospace}
+.muted{color:var(--muted)}
+.hidden{display:none!important}
+
+/* ---------- motif FFPMI ---------- */
+.motif{position:absolute;pointer-events:none}
+.q{position:absolute;width:var(--s);height:var(--s)}
+.q.tl{border-top-left-radius:100%}.q.tr{border-top-right-radius:100%}.q.bl{border-bottom-left-radius:100%}.q.br{border-bottom-right-radius:100%}
+
+/* ---------- login ---------- */
+.login{min-height:100vh;display:grid;grid-template-columns:1.15fr 1fr;overflow:hidden}
+.login-art{position:relative;background:var(--ink);color:#fff;padding:56px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.login-art h1{font-size:clamp(56px,7.6vw,132px);margin:0;position:relative;z-index:2;overflow-wrap:anywhere}
+.login-art h1 .y{display:block;color:var(--yellow);font-size:.62em;margin-top:.18em}
+.login-art .tag{font-family:"Space Mono",monospace;color:var(--teal);font-size:15px;position:relative;z-index:2}
+.login-art .foot{position:relative;z-index:2;font-size:13px;color:#b9b2a8;max-width:420px;line-height:1.6}
+.login-form{display:flex;flex-direction:column;justify-content:center;padding:56px clamp(28px,6vw,96px);gap:22px;position:relative}
+.login-form img{width:190px}
+.login-form h2{font-size:44px;margin:8px 0 0}
+.codebox{display:flex;gap:10px}
+.codebox input{flex:1;font-family:"Space Mono",monospace;font-size:26px;letter-spacing:.25em;text-transform:uppercase;padding:16px 18px;border:2px solid var(--ink);border-radius:14px;background:#fff;min-width:0}
+.codebox input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 4px rgba(224,87,34,.15)}
+.btn{border:0;border-radius:999px;padding:12px 22px;font-weight:700;font-size:14px;background:var(--ink);color:#fff;transition:transform .12s, background .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn.orange{background:var(--orange)}.btn.teal{background:var(--teal);color:var(--ink)}.btn.green{background:var(--green);color:var(--ink)}
+.btn.ghost{background:transparent;color:inherit;border:1.5px solid currentColor}
+.btn.sm{padding:8px 14px;font-size:13px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.err{color:var(--orange);font-weight:600;min-height:20px}
+
+/* ---------- shell ---------- */
+.top{position:sticky;top:0;z-index:20;background:var(--ink);color:#fff;display:flex;align-items:center;gap:18px;padding:12px 26px}
+.top .brand{display:flex;align-items:center;gap:12px}
+.top .brand img{height:30px;background:#fff;border-radius:8px;padding:4px 6px}
+.top .brand .display{font-size:28px;white-space:nowrap}
+.top .brand .display span{color:var(--yellow)}
+.top nav{display:flex;gap:6px;margin-left:16px;flex-wrap:nowrap;overflow-x:auto}
+.top nav button{white-space:nowrap;background:transparent;color:#d8d2c9;border:0;padding:8px 14px;border-radius:999px;font-weight:600;font-size:13px}
+.top nav button.on{background:#fff;color:var(--ink)}
+.top .who{margin-left:auto;display:flex;align-items:center;gap:12px;font-size:13px;white-space:nowrap}
+.top .who b{color:var(--teal)}
+.wrap{max-width:1320px;margin:0 auto;padding:34px 26px 80px}
+.hero{position:relative;overflow:hidden;border-radius:28px;background:#fff;border:1px solid var(--line);padding:34px 38px;margin-bottom:28px}
+.hero h2{font-size:clamp(40px,5vw,72px);margin:0}
+.hero p{max-width:640px;line-height:1.6;margin:12px 0 0}
+.hero .motif{right:0;top:0;width:260px;height:100%}
+.hero > :not(.motif){position:relative;z-index:1;max-width:calc(100% - 250px)}
+
+/* ---------- cartes dossiers ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
+.dcard{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;text-align:left;overflow:hidden;transition:transform .15s, box-shadow .15s;min-height:170px;display:flex;flex-direction:column;gap:10px}
+.dcard:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(35,31,28,.10)}
+.dcard .num{font-size:64px;line-height:.85}
+.dcard .lbl{font-family:"Space Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.dcard .bar{height:6px;border-radius:9px;background:#efe9df;overflow:hidden;margin-top:auto}
+.dcard .bar i{display:block;height:100%;background:var(--green);border-radius:9px}
+.dcard .st{font-size:12px;font-weight:700}
+.dcard .corner{position:absolute;right:-1px;top:-1px;width:54px;height:54px;border-bottom-left-radius:100%}
+.dcard.valide .corner{background:var(--green)}.dcard.cours .corner{background:var(--yellow)}.dcard.afaire .corner{background:var(--teal)}.dcard.prep .corner{background:#ddd}
+.dcard.prep{opacity:.55;cursor:not-allowed}
+
+/* ---------- notation (salle sombre) ---------- */
+.room{background:var(--dark);color:#eee;min-height:calc(100vh - 54px);display:grid;grid-template-columns:1fr 430px}
+.stage{position:relative;display:flex;flex-direction:column;min-width:0}
+.stage-top{display:flex;align-items:center;gap:14px;padding:16px 22px;color:#bbb}
+.stage-top .display{font-size:34px;color:#fff}
+.stage-img{flex:1;display:flex;align-items:center;justify-content:center;padding:6px 22px 10px;min-height:0;position:relative}
+.stage-img img{max-width:100%;max-height:calc(100vh - 250px);object-fit:contain;box-shadow:0 20px 60px rgba(0,0,0,.5);cursor:zoom-in;background:#111}
+.stage-img .load{position:absolute;font-family:"Space Mono",monospace;color:#777}
+.navarrow{position:absolute;top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;border:0;background:rgba(255,255,255,.08);color:#fff;font-size:24px}
+.navarrow:hover{background:rgba(255,255,255,.18)}
+.navarrow.l{left:14px}.navarrow.r{right:14px}
+.strip{display:flex;gap:8px;padding:12px 22px 18px;overflow-x:auto}
+.strip button{flex:0 0 auto;width:62px;height:62px;border-radius:12px;border:2px solid transparent;background:#000 center/cover no-repeat;position:relative;opacity:.55}
+.strip button.on{border-color:var(--yellow);opacity:1}
+.strip button.done{opacity:.9}
+.strip button span{position:absolute;left:4px;bottom:3px;font-family:"Space Mono",monospace;font-size:11px;font-weight:700;background:rgba(0,0,0,.65);padding:1px 5px;border-radius:6px}
+.strip button.done::after{content:"";position:absolute;right:5px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--green)}
+.panel{background:var(--dark2);border-left:1px solid var(--darkline);padding:22px 22px 30px;overflow-y:auto;max-height:calc(100vh - 54px);position:sticky;top:54px}
+.sujet .n{font-family:"Space Mono",monospace;color:var(--yellow);font-size:13px}
+.sujet h3{font-family:"Big Shoulders Display";font-weight:800;font-size:30px;text-transform:uppercase;line-height:1;margin:6px 0 10px;color:#fff}
+details.consignes{background:var(--dark3);border-radius:12px;padding:10px 14px;margin-bottom:18px}
+details.consignes summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--teal)}
+details.consignes ul{margin:10px 0 2px;padding-left:18px;font-size:13px;line-height:1.55;color:#cfcfcf}
+.crit{margin-bottom:16px}
+.crit .ch{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:8px;color:#e8e8e8}
+.crit .ch i{width:12px;height:12px;border-radius:0 0 0 100%;flex:0 0 auto}
+.crit .ch .v{margin-left:auto;font-family:"Space Mono",monospace;font-weight:700;color:#fff}
+.scale{display:grid;grid-template-columns:repeat(9,1fr);gap:4px}
+.scale button{height:40px;border-radius:9px;border:1px solid var(--darkline);background:var(--dark3);color:#ddd;font-family:"Space Mono",monospace;font-size:12px;font-weight:700;padding:0}
+.scale button.half{font-size:11px;color:#a8a8a8;font-weight:400}
+.scale button:hover{border-color:#777}
+.scale button.on{color:var(--ink);border-color:transparent}
+.total{display:flex;align-items:flex-end;justify-content:space-between;border-top:1px solid var(--darkline);padding-top:16px;margin-top:6px}
+.total .big{font-family:"Big Shoulders Display";font-weight:900;font-size:64px;line-height:.8;color:#fff}
+.total .big small{font-size:26px;color:#888}
+.saved{font-size:12px;color:#8a8a8a;font-family:"Space Mono",monospace}
+.saved.ok{color:var(--green)}.saved.ko{color:var(--orange)}
+.panel .actions{display:flex;gap:10px;margin-top:18px}
+.lock{background:rgba(155,197,94,.12);border:1px solid rgba(155,197,94,.4);color:var(--green);border-radius:12px;padding:10px 14px;font-size:13px;margin-bottom:14px}
+
+/* ---------- tables ---------- */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-bottom:22px}
+.card h3{font-family:"Big Shoulders Display";font-weight:800;font-size:28px;text-transform:uppercase;margin:0 0 4px}
+.card .sub{color:var(--muted);font-size:13px;margin-bottom:16px;line-height:1.5}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{font-family:"Space Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);text-align:left;padding:8px 8px;border-bottom:2px solid var(--ink);white-space:nowrap}
+td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.n,th.n{text-align:right;font-family:"Space Mono",monospace}
+.scroll{overflow-x:auto}
+.heat td.c{text-align:center;font-family:"Space Mono",monospace;font-size:12px;font-weight:700;min-width:54px}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+.pill.ex{background:var(--orange);color:#fff}.pill.ho{background:var(--yellow);color:var(--ink)}.pill.pdf{background:var(--teal);color:var(--ink)}.pill.no{background:#eee;color:#777}.pill.st{background:var(--brown);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:22px}
+.stat{border-radius:var(--r);padding:18px;color:var(--ink);position:relative;overflow:hidden}
+.stat .k{font-family:"Big Shoulders Display";font-weight:900;font-size:48px;line-height:.9}
+.stat .l{font-size:12px;font-weight:600;margin-top:4px}
+.prix{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:22px}
+.prix .p{border-radius:var(--r);padding:20px;color:#fff;position:relative;overflow:hidden;min-height:130px}
+.prix .p .t{font-family:"Space Mono",monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;opacity:.85}
+.prix .p .w{font-family:"Big Shoulders Display";font-weight:900;font-size:34px;text-transform:uppercase;line-height:.95;margin-top:10px}
+.prix .p .s{font-size:13px;margin-top:6px;opacity:.9}
+
+/* ---------- classement photos ---------- */
+.classer{display:grid;grid-template-columns:260px 1fr;gap:22px}
+.dlist button{display:flex;width:100%;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:8px;font-weight:600;text-align:left}
+.dlist button.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.thumb{position:relative;border-radius:12px;overflow:hidden;background:#eee;aspect-ratio:1;border:3px solid transparent;cursor:pointer}
+.thumb{background:#2a2a2e}.thumb img{width:100%;height:100%;object-fit:contain;display:block}
+.thumb .hint{position:absolute;right:8px;top:8px;background:var(--yellow);color:var(--ink);font-size:11px;font-weight:700;border-radius:8px;padding:2px 8px}
+.thumb.sel{border-color:var(--orange)}
+.thumb .badge{position:absolute;left:8px;top:8px;background:var(--ink);color:#fff;font-family:"Space Mono",monospace;font-weight:700;font-size:13px;border-radius:8px;padding:2px 8px}
+.thumb .badge.pl{background:var(--brown)}
+.thumb .badge.none{background:rgba(255,255,255,.85);color:var(--muted)}
+.thumb .zoom{position:absolute;right:6px;bottom:6px;background:rgba(0,0,0,.6);color:#fff;border:0;border-radius:8px;font-size:12px;padding:4px 8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.chips button{min-width:42px;height:40px;border-radius:10px;border:1.5px solid var(--ink);background:#fff;font-family:"Space Mono",monospace;font-weight:700}
+.chips button.used{background:#efe9df;color:#a39c92;border-color:#d8d0c4}
+.chips button.pl{background:var(--brown);color:#fff;border-color:var(--brown);padding:0 14px}
+.chips button.rm{padding:0 14px}
+
+/* ---------- modales ---------- */
+.modal{position:fixed;inset:0;background:rgba(20,18,16,.7);z-index:50;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal .box{background:#fff;border-radius:24px;max-width:560px;width:100%;padding:28px;max-height:90vh;overflow:auto}
+.modal .box h3{font-family:"Big Shoulders Display";font-weight:900;font-size:36px;text-transform:uppercase;margin:0 0 10px;line-height:.95}
+.modal .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.lightbox{position:fixed;inset:0;background:#0b0b0c;z-index:60;display:flex;align-items:center;justify-content:center;cursor:zoom-out}
+.lightbox img{max-width:98vw;max-height:98vh;object-fit:contain}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-weight:600;font-size:13px;z-index:70;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.toast.ko{background:var(--orange)}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:min(440px,100%);background:#fff;z-index:55;box-shadow:-20px 0 50px rgba(0,0,0,.2);padding:28px;overflow:auto}
+.drawer h3{font-family:"Big Shoulders Display";font-weight:900;font-size:34px;text-transform:uppercase;margin:0 0 14px}
+.drawer h4{font-family:"Space Mono",monospace;font-size:12px;text-transform:uppercase;letter-spacing:.1em;margin:20px 0 8px}
+.drawer li{margin-bottom:6px;font-size:13px;line-height:1.5}
+.analyse{line-height:1.65;font-size:14px}
+.analyse h1,.analyse h2,.analyse h3{font-family:"Big Shoulders Display";font-weight:800;text-transform:uppercase;font-size:24px;margin:20px 0 6px}
+.analyse table{margin:10px 0}
+.inline-in{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:13px;width:100%}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-3px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+
+/* ---------- charte ---------- */
+.charte{max-width:860px;margin:0 auto}
+.charte .doc{background:#fff;border:1px solid var(--line);border-radius:24px;padding:40px 46px;line-height:1.7;font-size:14.5px;position:relative;overflow:hidden}
+.charte .doc h2{font-family:"Big Shoulders Display";font-weight:900;font-size:44px;text-transform:uppercase;line-height:.95;margin:0 0 6px;max-width:80%}
+.charte .doc h4{font-family:"Space Mono",monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin:26px 0 8px}
+.charte .doc p{margin:0 0 10px}
+.charte .doc .art b{font-family:"Space Mono",monospace;color:var(--brown)}
+.charte .sign{background:var(--ink);color:#fff;border-radius:24px;padding:32px 36px;margin-top:20px}
+.charte .sign h3{font-family:"Big Shoulders Display";font-weight:900;font-size:34px;text-transform:uppercase;margin:0 0 14px;color:var(--yellow)}
+.charte .sign label{display:block;font-size:12px;font-family:"Space Mono",monospace;color:#bdb6ac;margin:14px 0 6px;text-transform:uppercase;letter-spacing:.08em}
+.charte .sign input[type=text]{width:100%;background:#2f2a26;border:1px solid #4a433d;color:#fff;border-radius:12px;padding:12px 14px;font-size:15px}
+.charte .sign .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.charte .pad{background:#fff;border-radius:14px;height:180px;width:100%;touch-action:none;cursor:crosshair;display:block}
+.charte .check{display:flex;gap:10px;align-items:flex-start;margin:18px 0;font-size:14px;line-height:1.5}
+.charte .check input{width:20px;height:20px;margin-top:2px;accent-color:var(--orange)}
+@media (max-width:700px){.charte .doc{padding:26px 22px}.charte .sign{padding:24px 20px}.charte .sign .row{grid-template-columns:1fr}.charte .doc h2{font-size:34px;max-width:100%}}
+@media (max-width:1250px){.top .brand .display{display:none}}
+@media (max-width:700px){.hero > :not(.motif){max-width:100%}.hero .motif{opacity:.18;transform:scale(.7);transform-origin:top right}.dcard{min-height:130px}.grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:1000px){
+  .login{grid-template-columns:1fr}.login-art{min-height:46vh;padding:34px}
+  .room{grid-template-columns:1fr}.panel{position:static;max-height:none;border-left:0;border-top:1px solid var(--darkline)}
+  .stage-img img{max-height:62vh}
+  .classer{grid-template-columns:1fr}
+  .top{flex-wrap:wrap;padding:10px 16px;position:static;gap:10px}.top nav{margin-left:0}.top .brand .display{font-size:22px}.top .who{margin-left:0;flex-wrap:wrap;white-space:normal}
+  .panel{top:0}.stage-top{flex-wrap:wrap}
+  .wrap{padding:22px 14px 60px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const SUPABASE_URL = "https://nhqnujzxfnfqenorydmu.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ocW51anp4Zm5mcWVub3J5ZG11Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM2MzcxNzYsImV4cCI6MjEwOTIxMzE3Nn0.4DPaocXsQS3VLwxhuxJvwgUcvrVukBMG16Xzer-uP_8";
+const LOGO = "data:image/png;base64,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";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const COULEURS_CRIT = ["var(--orange)","var(--yellow)","var(--teal)","var(--green)","#b49a86"];
+const VALEURS = [0,0.5,1,1.5,2,2.5,3,3.5,4];
+const S = { code:null, session:null, ref:null, view:null };
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = (n, d=2) => (n==null || isNaN(n)) ? "-" : Number(n).toFixed(d).replace(".", ",");
+// k = chemin dans le stockage Supabase (contient "/") ou, à défaut, identifiant Drive
+const STO = k => `${SUPABASE_URL}/storage/v1/object/public/photos/${k}`;
+const img = (k, w=1600) => k.includes("/") ? (w >= 1600 ? STO(k) : `${SUPABASE_URL}/storage/v1/render/image/public/photos/${k}?width=${w}&resize=contain&quality=75`) : `https://lh3.googleusercontent.com/d/${k}=w${w}`;
+const imgFallback = (k, w=1600) => k.includes("/") ? STO(k) : `https://drive.google.com/thumbnail?id=${k}&sz=w${w}`;
+function imgTag(id, w, extra=""){ return `<img src="${img(id,w)}" loading="lazy" referrerpolicy="no-referrer" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${imgFallback(id,w)}'}" ${extra}>`; }
+const pad = n => String(n).padStart(2,"0");
+
+function motif(colors){
+  const [a,b,c,d] = colors || ["var(--teal)","var(--yellow)","var(--orange)","var(--green)"];
+  return `<div class="motif" style="right:0;top:0;width:260px;height:100%">
+    <div class="q tr" style="--s:120px;right:150px;top:-10px;background:${a};opacity:.9"></div>
+    <div class="q" style="--s:120px;right:30px;top:-10px;background:${b};border-bottom-right-radius:28px"></div>
+    <div class="q bl" style="--s:90px;right:-20px;top:110px;background:${d}"></div>
+    <div class="q" style="--s:120px;right:150px;top:110px;background:${c};border-bottom-left-radius:28px"></div>
+    <div class="q" style="--s:60px;right:90px;top:110px;background:var(--brown)"></div>
+  </div>`;
+}
+
+function toast(msg, ko=false){
+  const t = document.createElement("div"); t.className = "toast" + (ko ? " ko" : ""); t.textContent = msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(), 3200);
+}
+function modal(html){
+  const m = document.createElement("div"); m.className = "modal"; m.innerHTML = `<div class="box">${html}</div>`;
+  m.addEventListener("click", e => { if(e.target === m) m.remove(); });
+  document.body.appendChild(m); return m;
+}
+function confirmer(titre, texte, ok="Confirmer"){
+  return new Promise(res => {
+    const m = modal(`<h3>${titre}</h3><div>${texte}</div><div class="actions"><button class="btn ghost" data-a="0">Annuler</button><button class="btn orange" data-a="1">${ok}</button></div>`);
+    m.querySelectorAll("[data-a]").forEach(b => b.onclick = () => { m.remove(); res(b.dataset.a === "1"); });
+  });
+}
+function lightbox(id){
+  const l = document.createElement("div"); l.className = "lightbox";
+  l.innerHTML = imgTag(id, 2400); l.onclick = () => l.remove();
+  document.body.appendChild(l);
+}
+async function rpc(fn, args){
+  const { data, error } = await sb.rpc(fn, args);
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+/* ================= CONNEXION ================= */
+function renderLogin(msg=""){
+  document.title = "Portraitiste de France 2027 - Jury";
+  $("#app").innerHTML = `
+  <div class="login">
+    <div class="login-art">
+      <div class="tag">// Qualification FFPMI - session test du jury</div>
+      <div>
+        <h1 class="display">Portraitiste<br>de France<span class="y">2027</span></h1>
+      </div>
+      <div class="foot">12 images par dossier, 5 critères par image, de 0 à 4 points. Les dossiers sont anonymes : vous ne voyez qu'un numéro.</div>
+      <div class="motif" style="right:-30px;bottom:-30px;top:auto;width:420px;height:420px">
+        <div class="q tr" style="--s:150px;left:60px;top:0;background:var(--teal)"></div>
+        <div class="q" style="--s:150px;left:210px;top:150px;background:var(--yellow);border-top-right-radius:36px"></div>
+        <div class="q" style="--s:150px;left:60px;top:150px;background:var(--orange);border-bottom-left-radius:36px"></div>
+        <div class="q bl" style="--s:150px;left:-90px;top:150px;background:var(--green)"></div>
+        <div class="q" style="--s:150px;left:210px;top:300px;background:var(--brown)"></div>
+      </div>
+    </div>
+    <div class="login-form">
+      <img src="${LOGO}" alt="FFPMI">
+      <h2 class="display">Entrer dans<br>la salle du jury</h2>
+      <p class="muted" style="margin:0;line-height:1.6">Saisissez le code personnel qui vous a été transmis.</p>
+      <form class="codebox" id="f">
+        <input id="code" autocomplete="off" maxlength="12" placeholder="CODE" autofocus>
+        <button class="btn orange">Entrer</button>
+      </form>
+      <div class="err" id="err">${esc(msg)}</div>
+    </div>
+  </div>`;
+  $("#f").onsubmit = e => { e.preventDefault(); login($("#code").value); };
+}
+
+async function login(code){
+  code = (code || "").trim().toUpperCase();
+  if (!code) return;
+  try {
+    const s = await rpc("pdf_session", { p_code: code });
+    if (!s) { renderLogin("Code inconnu. Vérifiez-le et réessayez."); return; }
+    S.code = code; S.session = s;
+    try { localStorage.setItem("pdf_code", code); } catch(e) {}
+    S.ref = await rpc("pdf_reference", {});
+    if (s.role === "admin") go("admin-resultats"); else go("juge-accueil");
+  } catch(e) { renderLogin("Connexion impossible : " + e.message); }
+}
+function logout(){
+  try { localStorage.removeItem("pdf_code"); } catch(e) {}
+  S.code = null; S.session = null;
+  history.replaceState(null, "", location.pathname);
+  renderLogin();
+}
+
+/* ================= CADRE ================= */
+function shell(navItems, active, body){
+  const s = S.session;
+  const who = s.role === "admin" ? "Administration" : `${esc(s.juge.prenom)} ${esc(s.juge.nom)}${s.juge.president ? " <b>· Président du jury</b>" : ""}`;
+  return `
+  <header class="top">
+    <div class="brand"><img src="${LOGO}" alt="FFPMI"><div class="display">Portraitiste de France <span>2027</span></div></div>
+    <nav>${navItems.map(([k,l]) => `<button data-go="${k}" class="${k===active?"on":""}">${l}</button>`).join("")}</nav>
+    <div class="who">${who}<button class="btn ghost sm" id="regl">Règlement</button><button class="btn ghost sm" id="out">Quitter</button></div>
+  </header>
+  ${body}`;
+}
+function bindShell(){
+  document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+  $("#out").onclick = logout;
+  $("#regl").onclick = reglement;
+}
+function navJuge(){
+  const n = [["juge-accueil","Mes dossiers"]];
+  if (S.session.juge.president) n.push(["vue-jury","Vue du jury"],["analyse","Analyse Claude"]);
+  return n;
+}
+const NAV_ADMIN = [["admin-resultats","Résultats"],["vue-jury","Vue du jury"],["analyse","Analyse Claude"],["admin-avancement","Avancement"],["admin-classer","Classer les photos"],["admin-juges","Juges"],["admin-params","Paramètres"]];
+
+function reglement(){
+  const r = S.ref.regles || [];
+  const sect = (t, k) => `<h4>${t}</h4><ul>${r.filter(x=>x.type===k).map(x=>`<li>${esc(x.texte)}</li>`).join("")}</ul>`;
+  const d = document.createElement("div"); d.className = "modal"; d.style.justifyContent = "flex-end"; d.style.padding = "0";
+  d.innerHTML = `<div class="drawer"><button class="btn ghost sm" style="float:right" id="x">Fermer</button><h3>Règlement</h3>
+    <h4>Notation</h4><ul>${(S.ref.criteres||[]).map(c=>`<li>${esc(c.nom)}</li>`).join("")}</ul>
+    <p style="font-size:13px;line-height:1.5">Chaque critère est noté de 0 à 4 (0 très faible, 1 faible, 2 moyen, 3 bien, 4 très bien), par demi-point. Chaque photo est notée sur 20.</p>
+    ${sect("Important","important")}${sect("Ne sont pas autorisés","interdit")}${sect("Précisions","precision")}</div>`;
+  d.onclick = e => { if (e.target === d) d.remove(); };
+  document.body.appendChild(d); $("#x", d).onclick = () => d.remove();
+}
+
+function go(view, arg){
+  if (S.session?.role === "juge" && !S.session.juge.charte_signee) view = "charte";
+  S.view = view;
+  const routes = {
+    "charte": vueCharte, "juge-accueil": vueJugeAccueil, "noter": vueNoter, "vue-jury": vueJury, "analyse": vueAnalyse,
+    "admin-resultats": vueResultats, "admin-avancement": vueAvancement, "admin-classer": vueClasser,
+    "admin-juges": vueJuges, "admin-params": vueParams
+  };
+  window.scrollTo(0,0);
+  (routes[view] || vueJugeAccueil)(arg);
+}
+
+
+/* ================= CHARTE DU JUGE ================= */
+function charteHtml(c){
+  return c.texte.split("\n").map(l => {
+    const t = l.trim(); if (!t) return "";
+    if (/^[A-ZÉÈÀ\s]+$/.test(t) || /^Dispositions générales/.test(t)) return `<h4>${esc(t.replace(/\s*:$/,""))}</h4>`;
+    const m = t.match(/^➜\s*(Article \d+)\s*•\s*(.*)$/);
+    if (m) return `<p class="art"><b>${m[1]}</b> · ${esc(m[2])}</p>`;
+    return `<p>${esc(t)}</p>`;
+  }).join("");
+}
+async function vueCharte(){
+  $("#app").innerHTML = shell([], "", `<div class="wrap"><p class="muted"><span class="spinner"></span> Chargement de la charte…</p></div>`); bindShell();
+  let C; try { C = await rpc("pdf_charte", { p_code: S.code }); } catch(e) { toast(e.message, true); return; }
+  if (C.signature) { S.session.juge.charte_signee = true; return go("juge-accueil"); }
+  const c = C.charte, j = S.session.juge;
+  const auj = new Date().toLocaleDateString("fr-FR", { day:"numeric", month:"long", year:"numeric" });
+  const html = `<div class="wrap"><div class="charte">
+    <section class="hero" style="margin-bottom:20px">${motif(["var(--brown)","var(--yellow)","var(--orange)","var(--teal)"])}
+      <div class="mono muted" style="font-size:13px">Étape 1 sur 2 · avant le premier dossier</div>
+      <h2 class="display">Bienvenue ${esc(j.prenom)}</h2>
+      <p>Avant d'accéder aux dossiers, merci de lire et de signer la charte du juge. Votre signature est enregistrée une fois pour toutes ; vous accéderez ensuite directement à la notation.</p>
+    </section>
+    <article class="doc">
+      <div class="mono muted" style="font-size:12px">${esc(c.version)}</div>
+      <h2>${esc(c.titre)}</h2>
+      <div class="mono" style="font-size:12px;color:var(--orange);margin-bottom:18px">Portraitiste de France 2027</div>
+      ${charteHtml(c)}
+      <p class="muted" style="font-size:12px;margin-top:26px">Fédération Française de la Photographie et des Métiers de l'Image (FFPMI) · 13 rue Sainte Ursule, 31000 Toulouse · SIRET 319 403 697 000 75 · secretariat@ffpmi.eu</p>
+    </article>
+    <form class="sign" id="fs">
+      <h3>Déclaration sur l'honneur</h3>
+      <div class="row">
+        <div><label>Je soussigné(e)</label><input type="text" id="nom" value="${esc(j.prenom+" "+j.nom)}"></div>
+        <div><label>En qualité de</label><input type="text" id="qual" value="Juge Portraitiste de France 2027"></div>
+      </div>
+      <p style="font-size:14px;line-height:1.6;margin:16px 0 0;color:#e8e2d8">${esc(c.declaration)}</p>
+      <div class="row">
+        <div><label>À</label><input type="text" id="lieu" placeholder="Ville"></div>
+        <div><label>Le</label><input type="text" value="${auj}" disabled></div>
+      </div>
+      <label>Signature : tapez vos prénom et nom</label>
+      <input type="text" id="sig" placeholder="${esc(j.prenom+" "+j.nom)}" autocomplete="off">
+      <div class="pad" id="apercu" style="display:flex;align-items:center;justify-content:center;height:110px;margin-top:10px;color:#231f1c;font:italic 600 34px Georgia,'Times New Roman',serif"></div>
+      <div class="check"><input type="checkbox" id="lu"><label for="lu" style="all:unset;cursor:pointer">J'ai lu la charte du juge et je m'engage à en respecter les termes.</label></div>
+      <button class="btn orange" id="ok" style="width:100%;padding:16px;font-size:16px" disabled>Signer la charte et accéder aux dossiers</button>
+    </form>
+  </div></div>`;
+  $("#app").innerHTML = shell([], "", html); bindShell();
+
+  // signature tapée au clavier : elle doit reprendre le nom de la déclaration
+  const norm = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim().toLowerCase();
+  function maj(){
+    $("#apercu").textContent = $("#sig").value;
+    const okNom = $("#sig").value.trim() && norm($("#sig").value) === norm($("#nom").value);
+    $("#ok").disabled = !(okNom && $("#lu").checked && $("#lieu").value.trim() && $("#nom").value.trim() && $("#qual").value.trim());
+  }
+  ["#lu","#lieu","#nom","#qual","#sig"].forEach(s => $(s).addEventListener("input", maj));
+  $("#lu").addEventListener("change", maj);
+  maj();
+
+  $("#fs").onsubmit = async e => {
+    e.preventDefault(); const b = $("#ok"); b.disabled = true; b.innerHTML = `<span class="spinner"></span> Enregistrement…`;
+    // image de la signature tapée, conservée avec la déclaration
+    const out = document.createElement("canvas"); out.width = 600; out.height = 140;
+    const g = out.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0,0,600,140); g.fillStyle = "#231f1c";
+    g.font = "italic 600 40px Georgia, 'Times New Roman', serif"; g.textAlign = "center"; g.textBaseline = "middle";
+    g.fillText($("#sig").value.trim(), 300, 62, 560);
+    g.font = "12px monospace"; g.fillStyle = "#7d766d"; g.fillText("Signé électroniquement le " + new Date().toLocaleString("fr-FR"), 300, 120);
+    try {
+      await rpc("pdf_signer_charte", { p_code:S.code, p_nom:$("#nom").value, p_qualite:$("#qual").value, p_lieu:$("#lieu").value, p_signature: out.toDataURL("image/png"), p_navigateur: navigator.userAgent });
+      S.session.juge.charte_signee = true; toast("Charte signée, merci !"); go("juge-accueil");
+    } catch(err){ toast(err.message, true); b.disabled = false; b.textContent = "Signer la charte et accéder aux dossiers"; }
+  };
+}
+
+/* ================= JUGE : ACCUEIL ================= */
+async function vueJugeAccueil(){
+  $("#app").innerHTML = shell(navJuge(), "juge-accueil", `<div class="wrap"><p class="muted"><span class="spinner"></span> Chargement des dossiers…</p></div>`); bindShell();
+  let ds;
+  try { ds = await rpc("pdf_juge_dossiers", { p_code: S.code }); } catch(e) { toast(e.message, true); return; }
+  const faits = ds.filter(d => d.valide).length;
+  const html = `<div class="wrap">
+    <section class="hero">${motif()}
+      <div class="mono muted" style="font-size:13px">Bonjour ${esc(S.session.juge.prenom)}</div>
+      <h2 class="display">${faits} / ${ds.length} dossiers<br>validés</h2>
+      <p>Ouvrez un dossier, notez chacune des 12 photos sur les 5 critères. Chaque note est enregistrée dès que vous cliquez. Quand les 60 notes sont saisies, validez le dossier : il sera alors verrouillé.</p>
+    </section>
+    <div class="grid">${ds.map(d => {
+      const cls = !d.pret ? "prep" : d.valide ? "valide" : d.nb_notes > 0 ? "cours" : "afaire";
+      const st = !d.pret ? "En préparation" : d.valide ? "Validé" : d.nb_notes > 0 ? `En cours · ${d.nb_notes}/60` : "À noter";
+      return `<button class="dcard ${cls}" data-d="${d.id}" ${!d.pret?"disabled":""}>
+        <div class="corner"></div>
+        <div class="lbl">Dossier</div>
+        <div class="num display">${pad(d.numero)}</div>
+        <div class="st">${st}</div>
+        <div class="bar"><i style="width:${Math.round(d.nb_notes/60*100)}%"></i></div>
+      </button>`;}).join("")}</div></div>`;
+  $("#app").innerHTML = shell(navJuge(), "juge-accueil", html); bindShell();
+  document.querySelectorAll("[data-d]").forEach(b => b.onclick = () => go("noter", { id: b.dataset.d, idx: 0 }));
+}
+
+/* ================= JUGE : NOTATION ================= */
+async function vueNoter(arg){
+  $("#app").innerHTML = shell(navJuge(), "", `<div class="room"><div class="stage"><div class="stage-top mono"><span class="spinner"></span> Ouverture du dossier…</div></div></div>`); bindShell();
+  let D;
+  try { D = await rpc("pdf_juge_dossier", { p_code: S.code, p_dossier: arg.id }); } catch(e) { toast(e.message, true); return go("juge-accueil"); }
+  const notes = {};
+  (D.notes||[]).forEach(n => notes[n.photo_id + "|" + n.critere] = Number(n.valeur));
+  const st = { idx: Math.min(arg.idx||0, D.photos.length-1) };
+  // reprendre à la première photo incomplète
+  if (!arg.idx) { const k = D.photos.findIndex(p => [1,2,3,4,5].some(c => notes[p.id+"|"+c] == null)); if (k > 0) st.idx = k; }
+
+  const totalPhoto = p => { let s=0; for (let c=1;c<=5;c++){ const v=notes[p.id+"|"+c]; if (v==null) return null; s+=v; } return s; };
+  const nbNotes = () => D.photos.reduce((a,p)=> a + [1,2,3,4,5].filter(c=>notes[p.id+"|"+c]!=null).length, 0);
+
+  function draw(){
+    const p = D.photos[st.idx];
+    const suj = S.ref.sujets.find(s => s.numero === p.numero) || {};
+    const tot = totalPhoto(p);
+    const n = nbNotes();
+    const body = `<div class="room">
+      <div class="stage">
+        <div class="stage-top"><span class="display">Dossier ${pad(D.numero)}</span><span class="mono">photo ${p.numero} / 12</span>
+          <span class="mono" style="margin-left:auto">${n}/60 notes</span>
+          <button class="btn ghost sm" id="back" style="color:#ddd">Mes dossiers</button></div>
+        <div class="stage-img"><span class="load">chargement de l'image…</span>${imgTag((p.src||p.drive_id), 1920, 'id="main" onload="this.previousElementSibling.remove()"')}
+          ${st.idx>0?`<button class="navarrow l" id="prev">‹</button>`:""}
+          ${st.idx<D.photos.length-1?`<button class="navarrow r" id="next">›</button>`:""}
+        </div>
+        <div class="strip">${D.photos.map((q,i)=>`<button class="${i===st.idx?"on":""} ${totalPhoto(q)!=null?"done":""}" data-i="${i}" style="background-image:url('${img((q.src||q.drive_id),200)}'),url('${imgFallback((q.src||q.drive_id),200)}')"><span>${q.numero}</span></button>`).join("")}</div>
+      </div>
+      <aside class="panel">
+        ${D.valide?`<div class="lock">Dossier validé. Les notes sont verrouillées ; seul l'administrateur peut le rouvrir.</div>`:""}
+        <div class="sujet"><div class="n">PHOTO ${p.numero}${S.ref.edition_sujets==="2025"?' <span style="color:#999">· sujet du règlement 2025</span>':""}</div><h3>${esc(suj.intitule||"")}</h3></div>
+        ${suj.consignes?`<details class="consignes"><summary>Consignes du sujet</summary><ul>${suj.consignes.split("\n").map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>`:""}
+        ${S.ref.criteres.map((c,ci)=>{ const v = notes[p.id+"|"+c.numero];
+          return `<div class="crit"><div class="ch"><i style="background:${COULEURS_CRIT[ci]}"></i>${esc(c.nom)}<span class="v">${v==null?"-":fmt(v,1)}</span></div>
+          <div class="scale">${VALEURS.map(x=>`<button class="${x%1?"half":""} ${v===x?"on":""}" style="${v===x?`background:${COULEURS_CRIT[ci]}`:""}" data-c="${c.numero}" data-v="${x}" ${D.valide?"disabled":""}>${x%1?String(x).replace(".",","):x}</button>`).join("")}</div></div>`;}).join("")}
+        <div class="total"><div><div class="mono" style="font-size:12px;color:#999">NOTE DE LA PHOTO</div><div class="big">${tot==null?"-":fmt(tot,1)}<small> /20</small></div></div><div class="saved" id="saved">${D.valide?"":"Enregistrement automatique"}</div></div>
+        <div class="actions">
+          ${st.idx<D.photos.length-1?`<button class="btn teal" id="next2" style="flex:1">Photo suivante ›</button>`:""}
+          ${!D.valide && st.idx===D.photos.length-1?`<button class="btn orange" id="valider" style="flex:1">Valider le dossier</button>`:""}
+        </div>
+        ${!D.valide && st.idx<D.photos.length-1 && n===60?`<button class="btn orange" id="valider" style="width:100%;margin-top:10px">Valider le dossier</button>`:""}
+      </aside></div>`;
+    $("#app").innerHTML = shell(navJuge(), "", body); bindShell();
+    $("#back").onclick = () => go("juge-accueil");
+    $("#main").onclick = () => lightbox((p.src||p.drive_id));
+    [["#prev",-1],["#next",1],["#next2",1]].forEach(([s,d]) => { const b=$(s); if(b) b.onclick = () => { st.idx+=d; draw(); }; });
+    document.querySelectorAll(".strip [data-i]").forEach(b => b.onclick = () => { st.idx = +b.dataset.i; draw(); });
+    document.querySelectorAll(".scale button").forEach(b => b.onclick = () => noter(p, +b.dataset.c, +b.dataset.v));
+    const v = $("#valider"); if (v) v.onclick = valider;
+  }
+
+  async function noter(p, c, v){
+    const k = p.id + "|" + c, avant = notes[k];
+    notes[k] = v; draw();
+    const s = $("#saved"); s.textContent = "Enregistrement…"; s.className = "saved";
+    try { await rpc("pdf_noter", { p_code:S.code, p_photo:p.id, p_critere:c, p_valeur:v }); const s2=$("#saved"); if(s2){ s2.textContent="✓ Enregistré"; s2.className="saved ok"; } }
+    catch(e){ notes[k] = avant; draw(); const s2=$("#saved"); if(s2){ s2.textContent="Non enregistré"; s2.className="saved ko"; } toast(e.message, true); }
+  }
+
+  async function valider(){
+    const n = nbNotes();
+    if (n < 60) { const manq = D.photos.filter(p => totalPhoto(p)==null).map(p=>p.numero); toast(`Il manque des notes sur les photos ${manq.join(", ")}`, true); return; }
+    const tots = D.photos.map(totalPhoto), moy = tots.reduce((a,b)=>a+b,0)/12;
+    const ok = await confirmer("Valider le dossier " + pad(D.numero) + " ?",
+      `<p>Votre moyenne pour ce dossier : <b class="mono">${fmt(moy)}/20</b></p>
+       <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;font-size:12px" class="mono">${D.photos.map((p,i)=>`<div style="background:#f3efe8;border-radius:8px;padding:6px;text-align:center">P${p.numero}<br><b>${fmt(tots[i],1)}</b></div>`).join("")}</div>
+       <p class="muted" style="font-size:13px">Une fois validé, vous ne pourrez plus modifier vos notes.</p>`, "Valider définitivement");
+    if (!ok) return;
+    try { await rpc("pdf_valider", { p_code:S.code, p_dossier:D.id }); toast("Dossier " + pad(D.numero) + " validé"); go("juge-accueil"); }
+    catch(e){ toast(e.message, true); }
+  }
+
+  document.onkeydown = e => {
+    if (S.view !== "noter" || document.querySelector(".modal,.lightbox")) return;
+    if (e.key === "ArrowRight" && st.idx < D.photos.length-1) { st.idx++; draw(); }
+    if (e.key === "ArrowLeft" && st.idx > 0) { st.idx--; draw(); }
+  };
+  draw();
+}
+
+/* ================= CALCULS ================= */
+function calculs(J){
+  const photosByD = {}; J.photos.forEach(p => (photosByD[p.dossier_id] ||= []).push(p));
+  const pt = {}; // pt[juge][photo] = total /20 si 5 notes
+  const cnt = {};
+  J.notes.forEach(n => { ((cnt[n.j] ||= {})[n.p] ||= []).push(Number(n.v)); });
+  for (const j in cnt) for (const p in cnt[j]) if (cnt[j][p].length === 5) (pt[j] ||= {})[p] = cnt[j][p].reduce((a,b)=>a+b,0);
+  const nbParJD = {}; J.notes.forEach(n => { const p = J.photos.find(x=>x.id===n.p); if(!p) return; const k=n.j+"|"+p.dossier_id; nbParJD[k]=(nbParJD[k]||0)+1; });
+  const valid = new Set(J.validations.map(v => v.j + "|" + v.d));
+  const juges = J.juges.filter(j => j.actif !== false);
+  // note jury par photo
+  const photoJury = {};
+  J.photos.forEach(p => { const v = juges.map(j => pt[j.id]?.[p.id]).filter(x => x != null); photoJury[p.id] = v.length ? { moy: v.reduce((a,b)=>a+b,0)/v.length, min: Math.min(...v), max: Math.max(...v), n: v.length } : null; });
+  // moyenne juge x dossier
+  const jd = {};
+  juges.forEach(j => J.dossiers.forEach(d => { const ps = photosByD[d.id] || []; const v = ps.map(p => pt[j.id]?.[p.id]); if (ps.length === 12 && v.every(x => x != null)) (jd[j.id] ||= {})[d.id] = v.reduce((a,b)=>a+b,0)/12; }));
+  // dossiers
+  const dossiers = J.dossiers.map(d => {
+    const ps = (photosByD[d.id] || []).sort((a,b)=>a.numero-b.numero);
+    const notesP = ps.map(p => photoJury[p.id]?.moy ?? null);
+    const complet = ps.length === 12 && notesP.every(x => x != null);
+    const moy = complet ? notesP.reduce((a,b)=>a+b,0)/12 : null;
+    const minP = complet ? Math.min(...notesP) : null;
+    const sous = (a,b) => { const v = ps.filter(p=>p.numero>=a && p.numero<=b).map(p=>photoJury[p.id]?.moy); return v.length && v.every(x=>x!=null) ? v.reduce((x,y)=>x+y,0)/v.length : null; };
+    let titre = null;
+    if (moy != null) titre = (moy>=16 && minP>=12) ? "ex" : (moy>=14 && minP>=12) ? "ho" : (moy>=12 && minP>=9) ? "pdf" : "no";
+    const nbJ = juges.filter(j => jd[j.id]?.[d.id] != null).length;
+    return { ...d, ps, notesP, moy, minP, titre, portraits: sous(1,8), couples: sous(9,12), nbJ };
+  });
+  // sévérité des juges
+  const stats = juges.map(j => {
+    const devs = [], xs = [], ys = [];
+    J.photos.forEach(p => { const mine = pt[j.id]?.[p.id]; if (mine == null) return;
+      const autres = juges.filter(o => o.id !== j.id).map(o => pt[o.id]?.[p.id]).filter(x => x != null);
+      if (!autres.length) return; const m = autres.reduce((a,b)=>a+b,0)/autres.length; devs.push(mine - m); xs.push(mine); ys.push(m); });
+    const mean = a => a.reduce((x,y)=>x+y,0)/a.length;
+    let corr = null;
+    if (xs.length > 3) { const mx=mean(xs), my=mean(ys); let sxy=0,sxx=0,syy=0; xs.forEach((x,i)=>{sxy+=(x-mx)*(ys[i]-my); sxx+=(x-mx)**2; syy+=(ys[i]-my)**2;}); corr = sxx&&syy ? sxy/Math.sqrt(sxx*syy) : null; }
+    const tous = Object.values(pt[j.id] || {});
+    return { juge: j, nbPhotos: tous.length, moyenne: tous.length ? mean(tous) : null, ecart: devs.length ? mean(devs) : null, absEcart: devs.length ? mean(devs.map(Math.abs)) : null, corr };
+  });
+  return { pt, jd, photoJury, dossiers, stats, juges, valid, nbParJD, photosByD };
+}
+const TITRES = { ex:["ex","Excellence"], ho:["ho","Honneur"], pdf:["pdf","Portraitiste de France"], no:["no","Non admis"] };
+const pillTitre = t => t ? `<span class="pill ${TITRES[t][0]}">${TITRES[t][1]}</span>` : `<span class="muted">-</span>`;
+function couleurEcart(e){ if (e==null) return ""; const a = Math.min(Math.abs(e)/3, 1); return e < 0 ? `background:rgba(224,87,34,${.12+a*.6})` : `background:rgba(139,205,198,${.15+a*.7})`; }
+
+async function chargerJury(){ return await rpc("pdf_vue_jury", { p_code: S.code }); }
+function navCourante(){ return S.session.role === "admin" ? NAV_ADMIN : navJuge(); }
+function attente(active){ $("#app").innerHTML = shell(navCourante(), active, `<div class="wrap"><p class="muted"><span class="spinner"></span> Chargement…</p></div>`); bindShell(); }
+
+/* ================= VUE DU JURY ================= */
+async function vueJury(){
+  attente("vue-jury");
+  let J; try { J = await chargerJury(); } catch(e) { toast(e.message, true); return; }
+  const C = calculs(J);
+  const seuilEcart = Number(J.parametres?.seuil_ecart || 4);
+  const adm = S.session.role === "admin";
+  const nomD = d => adm && d.nom ? `<div class="muted" style="font-size:11px;font-weight:500">${esc(d.nom)}</div>` : "";
+  const alertes = [];
+  J.photos.forEach(p => { const pj = C.photoJury[p.id]; if (pj && pj.n > 1 && pj.max - pj.min >= seuilEcart) { const d = J.dossiers.find(x=>x.id===p.dossier_id); alertes.push({ d, p, pj }); } });
+  alertes.sort((a,b) => (b.pj.max-b.pj.min) - (a.pj.max-a.pj.min));
+  const statsTri = [...C.stats].sort((a,b) => (a.ecart??0) - (b.ecart??0));
+
+  const html = `<div class="wrap">
+    <section class="hero">${motif(["var(--yellow)","var(--orange)","var(--teal)","var(--green)"])}
+      <div class="mono muted" style="font-size:13px">Vue du président du jury</div>
+      <h2 class="display">Qui note comment</h2>
+      <p>Les notes de chaque juge, dossier par dossier. En <b style="color:var(--orange)">orange</b>, le juge note plus bas que la moyenne du jury ; en <b style="color:#3f9c92">turquoise</b>, plus haut. Les écarts sont calculés photo par photo, en comparant chaque juge à la moyenne des autres.</p>
+    </section>
+
+    <div class="card"><h3>Sévérité des juges</h3>
+      <div class="sub">Écart moyen : note du juge moins la moyenne des autres juges sur les mêmes photos. Négatif = plus sévère. La cohérence (de -1 à 1) mesure si le juge classe les photos dans le même ordre que le reste du jury.</div>
+      <div class="scroll"><table>
+        <thead><tr><th>Juge</th><th class="n">Photos notées</th><th class="n">Moyenne /20</th><th class="n">Écart moyen</th><th class="n">Écart absolu</th><th class="n">Cohérence</th><th>Profil</th></tr></thead>
+        <tbody>${statsTri.map(s => `<tr><td><b>${esc(s.juge.prenom)} ${esc(s.juge.nom)}</b>${s.juge.president?' <span class="pill st">Président</span>':""}</td>
+          <td class="n">${s.nbPhotos}</td><td class="n">${fmt(s.moyenne)}</td>
+          <td class="n" style="${couleurEcart(s.ecart)}">${s.ecart==null?"-":(s.ecart>0?"+":"")+fmt(s.ecart)}</td>
+          <td class="n">${fmt(s.absEcart)}</td><td class="n">${fmt(s.corr)}</td>
+          <td>${s.ecart==null?'<span class="muted">pas assez de notes</span>': s.ecart<=-1?'<span class="pill ex">Sévère</span>': s.ecart>=1?'<span class="pill pdf">Généreux</span>':'<span class="pill no">Dans la moyenne</span>'}</td></tr>`).join("")}</tbody>
+      </table></div></div>
+
+    <div class="card"><h3>Moyennes par dossier</h3>
+      <div class="sub">Moyenne /20 de chaque juge sur chaque dossier complet. La ligne du bas donne la moyenne du jury.</div>
+      <div class="scroll"><table class="heat">
+        <thead><tr><th>Juge</th>${C.dossiers.slice().sort((a,b)=>a.numero-b.numero).map(d=>`<th class="n" style="text-align:center">D${pad(d.numero)}</th>`).join("")}</tr></thead>
+        <tbody>${C.juges.map(j => `<tr><td style="white-space:nowrap"><b>${esc(j.prenom)} ${esc(j.nom)}</b></td>${C.dossiers.slice().sort((a,b)=>a.numero-b.numero).map(d => { const v = C.jd[j.id]?.[d.id]; return `<td class="c" style="${v!=null&&d.moy!=null?couleurEcart(v-d.moy):""}">${v==null?'<span class="muted">·</span>':fmt(v,1)}</td>`; }).join("")}</tr>`).join("")}
+          <tr><td><b>Jury</b></td>${C.dossiers.slice().sort((a,b)=>a.numero-b.numero).map(d=>`<td class="c" style="background:var(--ink);color:#fff">${d.moy==null?"·":fmt(d.moy,1)}</td>`).join("")}</tr></tbody>
+      </table></div></div>
+
+    <div class="card"><h3>Grosses disparités</h3>
+      <div class="sub">Photos où l'écart entre la note la plus haute et la plus basse atteint ${seuilEcart} points ou plus.</div>
+      ${alertes.length ? `<div class="scroll"><table><thead><tr><th>Dossier</th><th>Photo</th><th class="n">Min</th><th class="n">Max</th><th class="n">Écart</th><th>Notes des juges</th><th></th></tr></thead><tbody>
+      ${alertes.slice(0,40).map(a => `<tr><td><b>D${pad(a.d.numero)}</b>${nomD(a.d)}</td><td>${a.p.numero}</td><td class="n">${fmt(a.pj.min,1)}</td><td class="n">${fmt(a.pj.max,1)}</td><td class="n"><b>${fmt(a.pj.max-a.pj.min,1)}</b></td>
+        <td style="font-size:12px">${C.juges.filter(j=>C.pt[j.id]?.[a.p.id]!=null).map(j=>`${esc(j.nom)} <b class="mono">${fmt(C.pt[j.id][a.p.id],1)}</b>`).join(" · ")}</td>
+        <td><button class="btn ghost sm" data-lb="${(a.p.src||a.p.drive_id)}">Voir</button></td></tr>`).join("")}</tbody></table></div>` : `<p class="muted">Aucune grosse disparité pour l'instant.</p>`}
+    </div></div>`;
+  $("#app").innerHTML = shell(navCourante(), "vue-jury", html); bindShell();
+  document.querySelectorAll("[data-lb]").forEach(b => b.onclick = () => lightbox(b.dataset.lb));
+}
+
+/* ================= ANALYSE CLAUDE ================= */
+function md(t){
+  const lines = esc(t).split("\n"); let out = "", inList = false, inTable = false;
+  const inline = s => s.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\*(.+?)\*/g,"<i>$1</i>");
+  for (const l of lines){
+    if (/^\s*\|/.test(l)) { if (/^\s*\|[\s:|-]+\|\s*$/.test(l)) continue; if (!inTable){ out += "<div class='scroll'><table>"; inTable = true; } out += "<tr>" + l.trim().replace(/^\||\|$/g,"").split("|").map(c=>`<td>${inline(c.trim())}</td>`).join("") + "</tr>"; continue; }
+    if (inTable){ out += "</table></div>"; inTable = false; }
+    if (/^\s*[-*] /.test(l)) { if (!inList){ out += "<ul>"; inList = true; } out += `<li>${inline(l.replace(/^\s*[-*] /,""))}</li>`; continue; }
+    if (inList){ out += "</ul>"; inList = false; }
+    const h = l.match(/^(#{1,3}) (.*)/); if (h) { out += `<h3>${inline(h[2])}</h3>`; continue; }
+    if (l.trim()) out += `<p>${inline(l)}</p>`;
+  }
+  if (inList) out += "</ul>"; if (inTable) out += "</table></div>";
+  return out;
+}
+async function vueAnalyse(){
+  attente("analyse");
+  let J; try { J = await chargerJury(); } catch(e) { toast(e.message, true); return; }
+  const html = `<div class="wrap">
+    <section class="hero">${motif(["var(--green)","var(--teal)","var(--yellow)","var(--orange)"])}
+      <div class="mono muted" style="font-size:13px">Analyse par Claude</div>
+      <h2 class="display">Lire le jury,<br>composer les tables</h2>
+      <p>Claude analyse toutes les notes du test : profils de notation (sévère, généreux, irrégulier), critères sur lesquels les juges divergent, puis proposition de 3 tables équilibrées pour le concours.</p>
+      <div style="margin-top:18px;display:flex;gap:10px;align-items:center"><button class="btn orange" id="go">Lancer une nouvelle analyse</button><span class="muted" id="st" style="font-size:13px"></span></div>
+    </section>
+    ${(J.analyses||[]).map(a => `<div class="card"><div class="mono muted" style="font-size:12px">${new Date(a.created_at).toLocaleString("fr-FR")}</div><div class="analyse">${md(a.contenu)}</div></div>`).join("") || `<p class="muted">Aucune analyse pour l'instant. Lancez-la quand les juges auront noté plusieurs dossiers.</p>`}
+  </div>`;
+  $("#app").innerHTML = shell(navCourante(), "analyse", html); bindShell();
+  $("#go").onclick = async () => {
+    $("#go").disabled = true; $("#st").innerHTML = `<span class="spinner"></span> Claude analyse les notes, cela prend environ une minute…`;
+    try {
+      const { data, error } = await sb.functions.invoke("analyse-jury", { body: { code: S.code } });
+      if (error) { let m = error.message; try { const b = await error.context.json(); m = b.error || m; } catch(e){} throw new Error(m); }
+      if (data?.error) throw new Error(data.error);
+      vueAnalyse();
+    } catch(e) { $("#go").disabled = false; $("#st").textContent = ""; toast("Analyse impossible : " + e.message, true); }
+  };
+}
+
+/* ================= ADMIN : RÉSULTATS ================= */
+async function vueResultats(){
+  attente("admin-resultats");
+  let J; try { J = await chargerJury(); } catch(e) { toast(e.message, true); return; }
+  const C = calculs(J);
+  const seuil2 = J.parametres?.seuil_second_tour ? Number(String(J.parametres.seuil_second_tour).replace(",", ".")) : null;
+  const ds = C.dossiers.slice().sort((a,b) => (b.moy??-1) - (a.moy??-1));
+  const best = (k, filtre=()=>true) => C.dossiers.filter(d => d[k] != null && filtre(d)).sort((a,b)=>b[k]-a[k])[0];
+  const major = best("moy", d => d.titre && d.titre !== "no"), norbert = best("portraits"), coeur = best("couples");
+  const nbT = t => C.dossiers.filter(d=>d.titre===t).length;
+  const avec2025 = ds.filter(d => d.moy!=null && d.note_2025!=null);
+  const ecart2025 = avec2025.length ? avec2025.reduce((a,d)=>a+(d.moy-d.note_2025),0)/avec2025.length : null;
+  const P = (cls, t, d, k) => `<div class="p" style="background:${cls}"><div class="t">${t}</div><div class="w">${d?("Dossier "+pad(d.numero)):"En attente"}</div><div class="s">${d?esc(d.nom)+" · "+fmt(d[k])+"/20":"Pas encore assez de notes"}</div></div>`;
+  const html = `<div class="wrap">
+    <section class="hero">${motif()}
+      <div class="mono muted" style="font-size:13px">Administration · résultats en direct</div>
+      <h2 class="display">Résultats<br>du jury test</h2>
+      <p>Note d'une photo = moyenne des juges qui l'ont notée en entier. Moyenne du dossier = moyenne des 12 photos. Titres selon le règlement 2027, notes planchers comprises.</p>
+    </section>
+    <div class="stats">
+      <div class="stat" style="background:var(--orange);color:#fff"><div class="k">${nbT("ex")}</div><div class="l">Excellence (16 et plus)</div></div>
+      <div class="stat" style="background:var(--yellow)"><div class="k">${nbT("ho")}</div><div class="l">Honneur (14 et plus)</div></div>
+      <div class="stat" style="background:var(--teal)"><div class="k">${nbT("pdf")}</div><div class="l">Portraitiste de France (12 et plus)</div></div>
+      <div class="stat" style="background:#ece6dc"><div class="k">${nbT("no")}</div><div class="l">Non admis</div></div>
+      <div class="stat" style="background:var(--brown);color:#fff"><div class="k">${ecart2025==null?"-":(ecart2025>0?"+":"")+fmt(ecart2025,1)}</div><div class="l">Écart moyen avec 2025</div></div>
+    </div>
+    <div class="prix">
+      ${P("var(--ink)","Portraitiste de France Major",major,"moy")}
+      ${P("var(--orange)","Prix Norbert Tisserand · photos 1 à 8",norbert,"portraits")}
+      ${P("var(--green)","Prix Cœur à Cœur · photos 9 à 12",coeur,"couples")}
+    </div>
+    <div class="card"><h3>Classement</h3><div class="sub">${seuil2!=null?`Seuil du second tour : ${fmt(seuil2)}/20.`:"Seuil du second tour : non défini (onglet Paramètres)."}</div>
+      <div class="scroll"><table><thead><tr><th>#</th><th>Dossier</th><th>Candidat</th><th class="n">Juges</th><th class="n">Moyenne</th><th class="n">Photo la + basse</th><th class="n">Photos 1-8</th><th class="n">Photos 9-12</th><th>Titre 2027</th>${seuil2!=null?"<th>Second tour</th>":""}<th class="n">Note 2025</th><th class="n">Écart</th></tr></thead>
+      <tbody>${ds.map((d,i) => `<tr><td class="mono">${d.moy!=null?i+1:""}</td><td><b>D${pad(d.numero)}</b></td><td>${esc(d.nom)}</td><td class="n">${d.nbJ}</td>
+        <td class="n"><b>${fmt(d.moy,3)}</b></td><td class="n" style="${d.minP!=null&&d.minP<12?"color:var(--orange);font-weight:700":""}">${fmt(d.minP,1)}</td>
+        <td class="n">${fmt(d.portraits)}</td><td class="n">${fmt(d.couples)}</td><td>${pillTitre(d.titre)}</td>
+        ${seuil2!=null?`<td>${d.moy!=null&&d.moy>=seuil2?'<span class="pill st">Qualifié</span>':""}</td>`:""}
+        <td class="n">${fmt(d.note_2025,3)}</td><td class="n">${d.moy!=null&&d.note_2025!=null?((d.moy-d.note_2025>0?"+":"")+fmt(d.moy-d.note_2025)):"-"}</td></tr>`).join("")}</tbody></table></div>
+    </div></div>`;
+  $("#app").innerHTML = shell(NAV_ADMIN, "admin-resultats", html); bindShell();
+}
+
+/* ================= ADMIN : AVANCEMENT ================= */
+async function vueAvancement(){
+  attente("admin-avancement");
+  let J; try { J = await chargerJury(); } catch(e) { toast(e.message, true); return; }
+  const C = calculs(J);
+  const ds = J.dossiers.slice().sort((a,b)=>a.numero-b.numero);
+  const html = `<div class="wrap">
+    <div class="card"><h3>Avancement des juges</h3><div class="sub">Nombre de notes saisies par dossier (60 = complet). ✓ = dossier validé : cliquez dessus pour le rouvrir.</div>
+    <div class="scroll"><table class="heat"><thead><tr><th>Juge</th>${ds.map(d=>`<th class="n" style="text-align:center">D${pad(d.numero)}</th>`).join("")}<th class="n">Validés</th></tr></thead>
+    <tbody>${C.juges.map(j => { let nv=0; return `<tr><td style="white-space:nowrap"><b>${esc(j.prenom)} ${esc(j.nom)}</b></td>${ds.map(d => { const v = C.valid.has(j.id+"|"+d.id); if(v) nv++; const n = C.nbParJD[j.id+"|"+d.id]||0;
+      return v ? `<td class="c" style="background:var(--green);cursor:pointer" data-r="${j.id}|${d.id}" title="Rouvrir">✓</td>` : `<td class="c" style="${n?"background:rgba(248,177,53,.35)":""}">${n||'<span class="muted">·</span>'}</td>`; }).join("")}<td class="n"><b>${nv}</b></td></tr>`; }).join("")}</tbody></table></div></div></div>`;
+  $("#app").innerHTML = shell(NAV_ADMIN, "admin-avancement", html); bindShell();
+  document.querySelectorAll("[data-r]").forEach(td => td.onclick = async () => {
+    const [jid, did] = td.dataset.r.split("|"); const j = J.juges.find(x=>x.id===jid), d = J.dossiers.find(x=>x.id===did);
+    if (await confirmer("Rouvrir ?", `Le dossier D${pad(d.numero)} de ${esc(j.prenom)} ${esc(j.nom)} redeviendra modifiable. Ses notes sont conservées.`, "Rouvrir")) {
+      try { await rpc("pdf_admin_reouvrir", { p_code:S.code, p_juge:jid, p_dossier:did }); toast("Dossier rouvert"); vueAvancement(); } catch(e){ toast(e.message, true); }
+    }
+  });
+}
+
+/* ================= ADMIN : CLASSER LES PHOTOS ================= */
+async function vueClasser(dossierId){
+  attente("admin-classer");
+  let A, J; try { [A, J] = await Promise.all([rpc("pdf_admin_donnees", { p_code:S.code }), chargerJury()]); } catch(e) { toast(e.message, true); return; }
+  const ds = J.dossiers.slice().sort((a,b)=>a.numero-b.numero);
+  const photos = A.photos;
+  const st = { d: dossierId || ds[0]?.id, sel: null };
+  function draw(){
+    const ps = photos.filter(p => p.dossier_id === st.d).sort((a,b)=>a.ordre-b.ordre);
+    const d = ds.find(x => x.id === st.d);
+    const used = new Set(ps.filter(p=>p.numero).map(p=>p.numero));
+    const prets = ds.filter(x => photos.filter(p=>p.dossier_id===x.id && p.numero).length === 12).length;
+    const sel = ps.find(p => p.id === st.sel);
+    const html = `<div class="wrap">
+      <section class="hero">${motif(["var(--teal)","var(--green)","var(--orange)","var(--yellow)"])}
+        <div class="mono muted" style="font-size:13px">${prets} / ${ds.length} dossiers prêts</div>
+        <h2 class="display">Classer les photos</h2>
+        ${(() => { const ok = photos.filter(p=>p.src).length, ko = photos.filter(p=>p.err).length; return `<div class="mono" style="font-size:13px;margin:6px 0 2px">${ok}/${photos.length} photos copiées sur Supabase${ko?` · <span style="color:var(--orange)">${ko} en erreur</span>`:""} ${ok+ko<photos.length||ko?`<button class="btn sm orange" id="imp" style="margin-left:8px">Copier les photos manquantes</button>`:""}</div>`; })()}
+        <div style="margin:10px 0 4px"><button class="btn teal sm" id="auto">✦ Classer automatiquement avec Claude</button> <span class="muted" id="autost" style="font-size:13px"></span></div>
+        <p>Les fichiers du Drive ne sont pas numérotés. Pour chaque dossier : cliquez sur une photo, puis sur son numéro de sujet. Marquez la planche-contact avec « Planche » : elle aide à retrouver l'ordre et n'est jamais montrée aux juges. Un dossier s'ouvre aux juges dès que ses 12 numéros sont attribués.</p>
+      </section>
+      <div class="classer">
+        <div class="dlist">${ds.map(x => { const n = photos.filter(p=>p.dossier_id===x.id && p.numero).length;
+          let cf = null; try { cf = JSON.parse(J.parametres?.["classement_d"+pad(x.numero)]||"null"); } catch(e){}
+          return `<button data-d="${x.id}" class="${x.id===st.d?"on":""}" title="${cf?.remarque?esc(cf.remarque):""}"><span>D${pad(x.numero)}${cf?` <span title="classé par Claude" style="color:${cf.confiance==="haute"?"var(--green)":cf.confiance==="moyenne"?"var(--yellow)":"var(--orange)"}">✦</span>`:""} <span class="muted" style="font-weight:500;font-size:12px">${esc(x.nom||"")}</span></span><span class="pill ${n===12?"pdf":"no"}">${n}/12</span></button>`; }).join("")}</div>
+        <div>
+          <div class="card" style="padding:16px 18px">
+            <b>${sel ? "Photo sélectionnée : choisissez son numéro" : "Cliquez sur une photo pour lui attribuer un numéro"}</b>
+            <div class="chips">${Array.from({length:12},(_,i)=>i+1).map(n=>`<button data-n="${n}" class="${used.has(n)&&(!sel||sel.numero!==n)?"used":""}" ${sel?"":"disabled"}>${n}</button>`).join("")}
+              <button class="pl" data-n="P" ${sel?"":"disabled"}>Planche</button><button class="rm" data-n="X" ${sel?"":"disabled"}>Retirer</button></div>
+            ${(()=>{ let cf=null; try{ cf=JSON.parse(J.parametres?.["classement_d"+pad(d.numero)]||"null"); }catch(e){} return cf?`<div style="font-size:12px;margin-bottom:6px">✦ Classé par Claude, confiance <b>${esc(cf.confiance||"?")}</b>${cf.remarque?` : ${esc(cf.remarque)}`:""}. Vérifiez et corrigez si besoin.</div>`:""; })()}
+            <div class="muted" style="font-size:12px">Numéros manquants : ${Array.from({length:12},(_,i)=>i+1).filter(n=>!used.has(n)).join(", ") || "aucun"}</div>
+          </div>
+          <div class="thumbs">${ps.map(p => `<div class="thumb ${p.id===st.sel?"sel":""}" data-p="${p.id}">${imgTag((p.src||p.drive_id), 500, `onload="if(this.naturalWidth/this.naturalHeight>1.7&&!this.parentNode.querySelector('.badge.pl,.hint')){const h=document.createElement('span');h.className='hint';h.textContent='Planche ?';this.parentNode.appendChild(h)}"`)}
+            ${p.l&&p.h&&p.l/p.h>1.7&&!p.planche?'<span class="hint">Planche ?</span>':""}<span class="badge ${p.planche?"pl":p.numero?"":"none"}">${p.planche?"Planche":p.numero?p.numero:"?"}</span><button class="zoom" data-z="${(p.src||p.drive_id)}">Agrandir</button></div>`).join("")}</div>
+        </div>
+      </div></div>`;
+    $("#app").innerHTML = shell(NAV_ADMIN, "admin-classer", html); bindShell();
+    document.querySelectorAll("[data-d]").forEach(b => b.onclick = () => { st.d = b.dataset.d; st.sel = null; draw(); });
+    $("#auto").onclick = async () => {
+      const b = $("#auto"); b.disabled = true; const stt = $("#autost");
+      try {
+        for (let tour = 0; tour < 25; tour++) {
+          stt.innerHTML = `<span class="spinner"></span> Claude regarde un dossier (environ 30 secondes chacun)…`;
+          const { data, error } = await sb.functions.invoke("classer-photos", { body: { code: S.code } });
+          if (error) { let m = error.message; try { const x = await error.context.json(); m = x.error || m; } catch(e){} throw new Error(m); }
+          if (data?.termine) break;
+          if (data?.error) { toast(`D${pad(data.dossier||0)} : ${data.error}`, true); break; }
+          toast(`Dossier D${pad(data.dossier)} classé (confiance ${data.confiance||"?"})`);
+          if (!data.restant) break;
+        }
+        vueClasser(st.d);
+      } catch(e) { toast("Classement interrompu : " + e.message, true); b.disabled = false; stt.textContent = ""; }
+    };
+    const imp = $("#imp"); if (imp) imp.onclick = async () => {
+      imp.disabled = true;
+      try {
+        for (let tour = 0; tour < 20; tour++) {
+          imp.innerHTML = `<span class="spinner"></span> Copie en cours…`;
+          const { data, error } = await sb.functions.invoke("import-photos", { body: { code: S.code, lot: 20, relancer_erreurs: tour === 0 } });
+          if (error) throw new Error(error.message); if (data?.error) throw new Error(data.error);
+          imp.textContent = `${data.faits} copiées, ${data.restant} restantes`;
+          if (!data.restant) break;
+        }
+        toast("Copie terminée"); vueClasser(st.d);
+      } catch(e) { toast("Copie interrompue : " + e.message, true); imp.disabled = false; }
+    };
+    document.querySelectorAll("[data-p]").forEach(t => t.onclick = e => { if (e.target.dataset.z) return; st.sel = t.dataset.p; draw(); });
+    document.querySelectorAll("[data-z]").forEach(b => b.onclick = () => lightbox(b.dataset.z));
+    document.querySelectorAll("[data-n]").forEach(b => b.onclick = async () => {
+      const p = photos.find(x => x.id === st.sel); if (!p) return;
+      const v = b.dataset.n, numero = (v==="P"||v==="X") ? null : +v, planche = v === "P";
+      try {
+        await rpc("pdf_admin_classer", { p_code:S.code, p_photo:p.id, p_numero:numero, p_planche:planche });
+        if (numero) photos.forEach(x => { if (x.dossier_id===p.dossier_id && x.numero===numero && x.id!==p.id) x.numero = null; });
+        p.numero = planche ? null : numero; p.planche = planche;
+        const suivante = photos.filter(x=>x.dossier_id===st.d).sort((a,b)=>a.ordre-b.ordre).find(x => !x.numero && !x.planche);
+        st.sel = suivante ? suivante.id : null; draw();
+      } catch(e){ toast(e.message, true); }
+    });
+  }
+  draw();
+}
+
+/* ================= ADMIN : JUGES ================= */
+async function vueJuges(){
+  attente("admin-juges");
+  let A, SG; try { [A, SG] = await Promise.all([rpc("pdf_admin_donnees", { p_code:S.code }), rpc("pdf_admin_signatures", { p_code:S.code })]); } catch(e) { toast(e.message, true); return; }
+  const sig = id => SG.signatures.find(x => x.juge_id === id);
+  const base = location.origin + location.pathname;
+  const html = `<div class="wrap">
+    <section class="hero">${motif(["var(--orange)","var(--teal)","var(--green)","var(--yellow)"])}
+      <div class="mono muted" style="font-size:13px">${A.juges.length} membres du jury</div>
+      <h2 class="display">Les juges</h2>
+      <p>${SG.signatures.length} / ${A.juges.length} chartes signées. Chaque juge a son code personnel. Envoyez-lui son lien direct : il arrive sur ses dossiers sans rien saisir, après avoir signé la charte du juge. Le président du jury a en plus accès à la vue du jury et à l'analyse Claude.</p>
+    </section>
+    <div class="card"><div class="scroll"><table><thead><tr><th>Juge</th><th>Code</th><th>Lien personnel</th><th>Charte</th><th>Email</th><th>Président</th><th>Actif</th></tr></thead><tbody>
+    ${A.juges.map(j => `<tr data-j="${j.id}"><td><b>${esc(j.prenom)} ${esc(j.nom)}</b></td><td class="mono"><b>${esc(j.code)}</b></td>
+      <td><button class="btn ghost sm" data-copy="${base}?code=${esc(j.code)}">Copier le lien</button></td>
+      <td>${sig(j.id)?`<button class="btn sm green" data-sig="${j.id}">Signée le ${new Date(sig(j.id).signe_at).toLocaleDateString("fr-FR")}</button>`:`<span class="pill no">Non signée</span>`}</td>
+      <td><input class="inline-in" data-f="email" value="${esc(j.email||"")}" placeholder="email"></td>
+      <td><input type="radio" name="pres" data-f="pres" ${j.est_president?"checked":""}></td>
+      <td><input type="checkbox" data-f="actif" ${j.actif?"checked":""}></td></tr>`).join("")}
+    </tbody></table></div></div></div>`;
+  $("#app").innerHTML = shell(NAV_ADMIN, "admin-juges", html); bindShell();
+  document.querySelectorAll("[data-sig]").forEach(b => b.onclick = () => {
+    const g = sig(b.dataset.sig), c = SG.charte;
+    const m = modal(`<h3>Charte signée</h3><div class="mono muted" style="font-size:12px">${esc(c.titre)} · ${esc(g.version)}</div>
+      <p style="line-height:1.6">Je soussigné(e) <b>${esc(g.nom)}</b>, en qualité de <b>${esc(g.qualite)}</b>, ${esc(c.declaration.charAt(0).toLowerCase()+c.declaration.slice(1))}</p>
+      <p>À <b>${esc(g.lieu)}</b>, le <b>${new Date(g.signe_at).toLocaleString("fr-FR")}</b></p>
+      <img src="${g.png}" style="max-width:100%;border:1px solid var(--line);border-radius:12px;background:#fff">
+      <div class="actions"><button class="btn ghost" data-x="annul">Annuler la signature</button><button class="btn" data-x="ok">Fermer</button></div>`);
+    $("[data-x=ok]", m).onclick = () => m.remove();
+    $("[data-x=annul]", m).onclick = async () => { m.remove(); if (await confirmer("Annuler la signature ?", "Le juge devra signer à nouveau la charte avant de pouvoir noter.", "Annuler la signature")) { try { await rpc("pdf_admin_annuler_signature", { p_code:S.code, p_juge:b.dataset.sig }); toast("Signature annulée"); vueJuges(); } catch(e){ toast(e.message, true); } } };
+  });
+  document.querySelectorAll("[data-copy]").forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.copy); toast("Lien copié"); } catch(e) { modal(`<h3>Lien</h3><p class="mono" style="word-break:break-all">${esc(b.dataset.copy)}</p>`); } });
+  document.querySelectorAll("tr[data-j]").forEach(tr => {
+    const save = async () => {
+      try { await rpc("pdf_admin_juge", { p_code:S.code, p_juge:tr.dataset.j, p_email:$("[data-f=email]",tr).value.trim()||null, p_president:$("[data-f=pres]",tr).checked, p_actif:$("[data-f=actif]",tr).checked }); toast("Enregistré"); }
+      catch(e){ toast(e.message, true); }
+    };
+    $("[data-f=email]",tr).onchange = save; $("[data-f=actif]",tr).onchange = save;
+    $("[data-f=pres]",tr).onchange = async () => { await save(); vueJuges(); };
+  });
+}
+
+/* ================= ADMIN : PARAMÈTRES ================= */
+async function vueParams(){
+  attente("admin-params");
+  let J; try { J = await chargerJury(); } catch(e) { toast(e.message, true); return; }
+  const p = J.parametres || {};
+  const html = `<div class="wrap"><div class="card" style="max-width:640px"><h3>Paramètres</h3><div class="sub">Modifiables à tout moment, sans toucher au code.</div>
+    <label><b>Seuil d'accès au second tour</b> (note sur 20, vide = non défini)</label>
+    <div style="display:flex;gap:10px;margin:8px 0 20px"><input class="inline-in" id="s2" value="${esc(p.seuil_second_tour||"")}" placeholder="ex. 14" style="max-width:160px"><button class="btn sm" data-k="seuil_second_tour" data-i="s2">Enregistrer</button></div>
+    <label><b>Sujets affichés aux juges</b> (les dossiers test ont été réalisés selon le règlement 2025)</label>
+    <div style="display:flex;gap:10px;margin:8px 0 20px"><select class="inline-in" id="sj" style="max-width:260px"><option value="2025" ${p.sujets_test==="2025"?"selected":""}>Sujets 2025 (dossiers test)</option><option value="2027" ${p.sujets_test!=="2025"?"selected":""}>Sujets 2027</option></select><button class="btn sm" data-k="sujets_test" data-i="sj">Enregistrer</button></div>
+    <label><b>Seuil d'alerte « grosse disparité »</b> (écart en points sur une photo /20)</label>
+    <div style="display:flex;gap:10px;margin:8px 0 0"><input class="inline-in" id="se" value="${esc(p.seuil_ecart||"4")}" style="max-width:160px"><button class="btn sm" data-k="seuil_ecart" data-i="se">Enregistrer</button></div>
+  </div></div>`;
+  $("#app").innerHTML = shell(NAV_ADMIN, "admin-params", html); bindShell();
+  document.querySelectorAll("[data-k]").forEach(b => b.onclick = async () => {
+    try { await rpc("pdf_admin_param", { p_code:S.code, p_cle:b.dataset.k, p_valeur:$("#"+b.dataset.i).value.trim().replace(",", ".") }); toast("Enregistré"); } catch(e){ toast(e.message, true); }
+  });
+}
+
+/* ================= DÉMARRAGE ================= */
+(function start(){
+  const q = new URLSearchParams(location.search).get("code");
+  let saved = null; try { saved = localStorage.getItem("pdf_code"); } catch(e) {}
+  if (q) { history.replaceState(null, "", location.pathname); login(q); }
+  else if (saved) login(saved);
+  else renderLogin();
+})();
+</script>
+</body>
+</html>
