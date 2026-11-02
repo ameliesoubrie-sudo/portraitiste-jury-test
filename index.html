@@ -314,7 +314,7 @@ async function login(code){
     S.code = code; S.session = s;
     try { localStorage.setItem("pdf_code", code); } catch(e) {}
     S.ref = await rpc("pdf_reference", {});
-    if (s.role === "admin") go("admin-resultats"); else go("juge-accueil");
+    if (s.role === "admin") go("admin-resultats"); else if (s.role === "admin_simple") go("admin-avancement"); else go("juge-accueil");
   } catch(e) { renderLogin("Connexion impossible : " + e.message); }
 }
 function logout(){
@@ -327,7 +327,7 @@ function logout(){
 /* ================= CADRE ================= */
 function shell(navItems, active, body){
   const s = S.session;
-  const who = s.role === "admin" ? "Administration" : `${esc(s.juge.prenom)} ${esc(s.juge.nom)}${s.juge.president ? " <b>· Président du jury</b>" : ""}`;
+  const who = s.role === "admin" ? "Super admin" : s.role === "admin_simple" ? `Admin · ${esc(s.admin.nom)}` : `${esc(s.juge.prenom)} ${esc(s.juge.nom)}${s.juge.president ? " <b>· Président du jury</b>" : ""}`;
   return `
   <header class="top">
     <div class="brand"><img src="${LOGO}" alt="FFPMI"><div class="display">Portraitiste de France <span>2027</span></div></div>
@@ -362,6 +362,7 @@ function reglement(){
 
 function go(view, arg){
   if (S.session?.role === "juge" && !S.session.juge.charte_signee) view = "charte";
+  if (S.session?.role === "admin_simple") view = "admin-avancement";
   S.view = view;
   const routes = {
     "charte": vueCharte, "juge-accueil": vueJugeAccueil, "noter": vueNoter, "vue-jury": vueJury, "analyse": vueAnalyse,
@@ -604,7 +605,8 @@ const pillTitre = t => t ? `<span class="pill ${TITRES[t][0]}">${TITRES[t][1]}</
 function couleurEcart(e){ if (e==null) return ""; const a = Math.min(Math.abs(e)/3, 1); return e < 0 ? `background:rgba(224,87,34,${.12+a*.6})` : `background:rgba(139,205,198,${.15+a*.7})`; }
 
 async function chargerJury(){ return await rpc("pdf_vue_jury", { p_code: S.code }); }
-function navCourante(){ return S.session.role === "admin" ? NAV_ADMIN : navJuge(); }
+const NAV_ADMIN_SIMPLE = [["admin-avancement","Avancement des juges"]];
+function navCourante(){ return S.session.role === "admin" ? NAV_ADMIN : S.session.role === "admin_simple" ? NAV_ADMIN_SIMPLE : navJuge(); }
 function attente(active){ $("#app").innerHTML = shell(navCourante(), active, `<div class="wrap"><p class="muted"><span class="spinner"></span> Chargement…</p></div>`); bindShell(); }
 
 /* ================= VUE DU JURY ================= */
@@ -741,17 +743,34 @@ async function vueResultats(){
 /* ================= ADMIN : AVANCEMENT ================= */
 async function vueAvancement(){
   attente("admin-avancement");
-  let J; try { J = await chargerJury(); } catch(e) { toast(e.message, true); return; }
-  const C = calculs(J);
-  const ds = J.dossiers.slice().sort((a,b)=>a.numero-b.numero);
+  let A; try { A = await rpc("pdf_avancement", { p_code: S.code }); } catch(e) { toast(e.message, true); return; }
+  const sup = S.session.role === "admin";
+  const ds = A.dossiers, juges = A.juges.filter(j => j.actif);
+  const nb = {}; A.compte.forEach(c => { const k = c.j+"|"+c.d; nb[k] = (nb[k]||0) + c.n; });
+  const valid = new Set(A.validations.map(v => v.j+"|"+v.d));
+  const nbVal = j => ds.filter(d => valid.has(j.id+"|"+d.id)).length;
+  const total = ds.length * juges.length, faits = A.validations.length;
+  const retard = juges.filter(j => nbVal(j) < ds.length);
   const html = `<div class="wrap">
-    <div class="card"><h3>Avancement des juges</h3><div class="sub">Nombre de notes saisies par dossier (60 = complet). ✓ = dossier validé : cliquez dessus pour le rouvrir.</div>
-    <div class="scroll"><table class="heat"><thead><tr><th>Juge</th>${ds.map(d=>`<th class="n" style="text-align:center">D${pad(d.numero)}</th>`).join("")}<th class="n">Validés</th></tr></thead>
-    <tbody>${C.juges.map(j => { let nv=0; return `<tr><td style="white-space:nowrap"><b>${esc(j.prenom)} ${esc(j.nom)}</b></td>${ds.map(d => { const v = C.valid.has(j.id+"|"+d.id); if(v) nv++; const n = C.nbParJD[j.id+"|"+d.id]||0;
-      return v ? `<td class="c" style="background:var(--green);cursor:pointer" data-r="${j.id}|${d.id}" title="Rouvrir">✓</td>` : `<td class="c" style="${n?"background:rgba(248,177,53,.35)":""}">${n||'<span class="muted">·</span>'}</td>`; }).join("")}<td class="n"><b>${nv}</b></td></tr>`; }).join("")}</tbody></table></div></div></div>`;
-  $("#app").innerHTML = shell(NAV_ADMIN, "admin-avancement", html); bindShell();
+    <section class="hero">${motif(["var(--green)","var(--yellow)","var(--teal)","var(--orange)"])}
+      <div class="mono muted" style="font-size:13px">${sup ? "Super admin" : "Admin"} · dossiers anonymes</div>
+      <h2 class="display">${faits} / ${total}<br>notations validées</h2>
+      <p>${juges.length} juges × ${ds.length} dossiers. Avancement de chaque juge, dossier par dossier : nombre de notes saisies (60 = complet), ✓ quand le dossier est validé.${sup ? " Cliquez sur un ✓ pour rouvrir le dossier." : ""}</p>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn sm orange" id="relance" ${retard.length?"":"disabled"}>Copier les emails des ${retard.length} juges qui n'ont pas fini</button></div>
+    </section>
+    <div class="card"><div class="scroll"><table class="heat"><thead><tr><th>Juge</th><th>Charte</th>${ds.map(d=>`<th class="n" style="text-align:center">D${pad(d.numero)}</th>`).join("")}<th class="n">Validés</th></tr></thead>
+    <tbody>${juges.map(j => `<tr><td style="white-space:nowrap"><b>${esc(j.prenom)} ${esc(j.nom)}</b></td>
+      <td>${j.charte?'<span class="pill pdf">Signée</span>':'<span class="pill no">Non signée</span>'}</td>
+      ${ds.map(d => { const k = j.id+"|"+d.id, v = valid.has(k), n = nb[k]||0;
+        return v ? `<td class="c" style="background:var(--green);${sup?"cursor:pointer":""}" ${sup?`data-r="${k}" title="Rouvrir"`:""}>✓</td>` : `<td class="c" style="${n?"background:rgba(248,177,53,.35)":""}">${n||'<span class="muted">·</span>'}</td>`; }).join("")}
+      <td class="n"><b>${nbVal(j)}/${ds.length}</b></td></tr>`).join("")}</tbody></table></div></div></div>`;
+  $("#app").innerHTML = shell(navCourante(), "admin-avancement", html); bindShell();
+  $("#relance").onclick = async () => {
+    const mails = retard.map(j => j.email).filter(Boolean).join(", ");
+    try { await navigator.clipboard.writeText(mails); toast("Emails copiés"); } catch(e) { modal(`<h3>Emails</h3><p class="mono" style="word-break:break-all">${esc(mails)}</p>`); }
+  };
   document.querySelectorAll("[data-r]").forEach(td => td.onclick = async () => {
-    const [jid, did] = td.dataset.r.split("|"); const j = J.juges.find(x=>x.id===jid), d = J.dossiers.find(x=>x.id===did);
+    const [jid, did] = td.dataset.r.split("|"); const j = A.juges.find(x=>x.id===jid), d = ds.find(x=>x.id===did);
     if (await confirmer("Rouvrir ?", `Le dossier D${pad(d.numero)} de ${esc(j.prenom)} ${esc(j.nom)} redeviendra modifiable. Ses notes sont conservées.`, "Rouvrir")) {
       try { await rpc("pdf_admin_reouvrir", { p_code:S.code, p_juge:jid, p_dossier:did }); toast("Dossier rouvert"); vueAvancement(); } catch(e){ toast(e.message, true); }
     }
@@ -845,7 +864,7 @@ async function vueClasser(dossierId){
 /* ================= ADMIN : JUGES ================= */
 async function vueJuges(){
   attente("admin-juges");
-  let A, SG; try { [A, SG] = await Promise.all([rpc("pdf_admin_donnees", { p_code:S.code }), rpc("pdf_admin_signatures", { p_code:S.code })]); } catch(e) { toast(e.message, true); return; }
+  let A, SG, AS; try { [A, SG, AS] = await Promise.all([rpc("pdf_admin_donnees", { p_code:S.code }), rpc("pdf_admin_signatures", { p_code:S.code }), rpc("pdf_admin_simples", { p_code:S.code })]); } catch(e) { toast(e.message, true); return; }
   const sig = id => SG.signatures.find(x => x.juge_id === id);
   const base = location.origin + location.pathname;
   const html = `<div class="wrap">
@@ -861,8 +880,21 @@ async function vueJuges(){
       <td><input class="inline-in" data-f="email" value="${esc(j.email||"")}" placeholder="email"></td>
       <td><input type="radio" name="pres" data-f="pres" ${j.est_president?"checked":""}></td>
       <td><input type="checkbox" data-f="actif" ${j.actif?"checked":""}></td></tr>`).join("")}
-    </tbody></table></div></div></div>`;
+    </tbody></table></div></div>
+    <div class="card"><h3>Admins simplifiés</h3><div class="sub">Ils voient uniquement l'avancement des juges, avec les dossiers anonymes (numéros seulement). Chacun a son propre code ; vous pouvez le désactiver ou le supprimer à tout moment.</div>
+      <div class="scroll"><table><thead><tr><th>Nom</th><th>Code</th><th>Lien</th><th>Email</th><th>Actif</th><th></th></tr></thead><tbody>
+      ${AS.map(a => `<tr data-a="${a.id}"><td><input class="inline-in" data-f="nom" value="${esc(a.nom)}"></td><td class="mono"><b>${esc(a.code)}</b></td>
+        <td><button class="btn ghost sm" data-copy="${base}?code=${esc(a.code)}">Copier le lien</button></td>
+        <td><input class="inline-in" data-f="email" value="${esc(a.email||"")}"></td><td><input type="checkbox" data-f="actif" ${a.actif?"checked":""}></td>
+        <td><button class="btn ghost sm" data-del="${a.id}">Supprimer</button></td></tr>`).join("") || `<tr><td colspan="6" class="muted">Aucun admin simplifié pour l'instant.</td></tr>`}
+      </tbody></table></div>
+      <form id="addA" style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap"><input class="inline-in" id="anom" placeholder="Prénom Nom" style="max-width:220px"><input class="inline-in" id="amail" placeholder="email (facultatif)" style="max-width:260px"><button class="btn sm">Ajouter un admin simplifié</button></form>
+    </div></div>`;
   $("#app").innerHTML = shell(NAV_ADMIN, "admin-juges", html); bindShell();
+  $("#addA").onsubmit = async e => { e.preventDefault(); try { await rpc("pdf_admin_simple_maj", { p_code:S.code, p_id:null, p_nom:$("#anom").value, p_email:$("#amail").value, p_actif:true, p_supprimer:false }); toast("Admin simplifié ajouté"); vueJuges(); } catch(err){ toast(err.message, true); } };
+  document.querySelectorAll("tr[data-a]").forEach(tr => { const save = async () => { try { await rpc("pdf_admin_simple_maj", { p_code:S.code, p_id:tr.dataset.a, p_nom:$("[data-f=nom]",tr).value, p_email:$("[data-f=email]",tr).value, p_actif:$("[data-f=actif]",tr).checked, p_supprimer:false }); toast("Enregistré"); } catch(e){ toast(e.message, true); } };
+    ["nom","email","actif"].forEach(f => $(`[data-f=${f}]`,tr).onchange = save); });
+  document.querySelectorAll("[data-del]").forEach(b => b.onclick = async () => { if (await confirmer("Supprimer cet accès ?", "Son code ne fonctionnera plus.", "Supprimer")) { try { await rpc("pdf_admin_simple_maj", { p_code:S.code, p_id:b.dataset.del, p_nom:"", p_email:"", p_actif:false, p_supprimer:true }); vueJuges(); } catch(e){ toast(e.message, true); } } });
   document.querySelectorAll("[data-sig]").forEach(b => b.onclick = () => {
     const g = sig(b.dataset.sig), c = SG.charte;
     const m = modal(`<h3>Charte signée</h3><div class="mono muted" style="font-size:12px">${esc(c.titre)} · ${esc(g.version)}</div>
