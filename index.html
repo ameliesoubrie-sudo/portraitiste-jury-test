@@ -449,6 +449,23 @@ async function vueCharte(){
   };
 }
 
+
+/* ================= ANNONCE DU TEST (pop-up juges) ================= */
+function annonceTest(){
+  const m = modal(`<div>
+    <div style="position:relative;width:76px;height:38px;margin-bottom:14px">
+      <div class="q tr" style="--s:38px;left:0;top:0;background:var(--teal)"></div>
+      <div class="q" style="--s:38px;left:38px;top:0;background:var(--yellow);border-bottom-right-radius:10px"></div>
+    </div>
+    <div class="mono" style="font-size:12px;color:var(--orange)">Session test du jury</div>
+    <h3>Votre test avant le 15 novembre</h3>
+    <p style="line-height:1.6">Nous avons besoin de vos notes sur l'ensemble des dossiers <b>avant le dimanche 15 novembre 2026 à minuit</b>.</p>
+    <p style="line-height:1.6">Antoine Dominique, président du jury, prendra ensuite contact avec vous pour fixer une <b>réunion fin novembre</b> : nous y ferons ensemble le debrief des votes.</p>
+    <p class="muted" style="font-size:13px;line-height:1.5">Vos notes sont enregistrées à chaque clic : vous pouvez avancer en plusieurs fois et reprendre où vous en étiez.</p>
+    <div class="actions"><button class="btn orange" data-x="ok">C'est noté, je commence</button></div></div>`);
+  $("[data-x=ok]", m).onclick = () => m.remove();
+}
+
 /* ================= JUGE : ACCUEIL ================= */
 async function vueJugeAccueil(){
   $("#app").innerHTML = shell(navJuge(), "juge-accueil", `<div class="wrap"><p class="muted"><span class="spinner"></span> Chargement des dossiers…</p></div>`); bindShell();
@@ -473,6 +490,7 @@ async function vueJugeAccueil(){
       </button>`;}).join("")}</div></div>`;
   $("#app").innerHTML = shell(navJuge(), "juge-accueil", html); bindShell();
   document.querySelectorAll("[data-d]").forEach(b => b.onclick = () => go("noter", { id: b.dataset.d, idx: 0 }));
+  if (!S.annonceVue) { S.annonceVue = true; annonceTest(); }
 }
 
 /* ================= JUGE : NOTATION ================= */
