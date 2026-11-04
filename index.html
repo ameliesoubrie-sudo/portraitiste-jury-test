@@ -105,7 +105,10 @@ input,select{font-family:inherit}
 details.consignes{background:var(--dark3);border-radius:12px;padding:10px 14px;margin-bottom:18px}
 details.consignes summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--teal)}
 details.consignes ul{margin:10px 0 2px;padding-left:18px;font-size:13px;line-height:1.55;color:#cfcfcf}
-.crit{margin-bottom:16px}
+.crit{margin-bottom:10px;padding:6px 8px;border-radius:10px;border:1px solid transparent;transition:border-color .15s,background .15s}
+.crit.actif{border-color:rgba(248,177,53,.75);background:rgba(255,255,255,.05)}
+.kbd-aide{font-size:11px;color:#9a9a9a;margin:4px 0 14px;line-height:1.6}
+.kbd-aide b{display:inline-block;min-width:18px;padding:0 5px;border:1px solid #555;border-radius:5px;color:#ddd;text-align:center;font-weight:600}
 .crit .ch{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;margin-bottom:8px;color:#e8e8e8}
 .crit .ch i{width:12px;height:12px;border-radius:0 0 0 100%;flex:0 0 auto}
 .crit .ch .v{margin-left:auto;font-family:"Space Mono",monospace;font-weight:700;color:#fff}
@@ -513,10 +516,13 @@ async function vueNoter(arg){
   try { D = await rpc("pdf_juge_dossier", { p_code: S.code, p_dossier: arg.id }); } catch(e) { toast(e.message, true); return go("juge-accueil"); }
   const notes = {};
   (D.notes||[]).forEach(n => notes[n.photo_id + "|" + n.critere] = Number(n.valeur));
-  const st = { idx: Math.min(arg.idx||0, D.photos.length-1) };
+  const st = { idx: Math.min(arg.idx||0, D.photos.length-1), crit: 0 };
+  const premierVide = () => { const p = D.photos[st.idx]; const k = [1,2,3,4,5].findIndex(c => notes[p.id+"|"+c] == null); return k < 0 ? 0 : k; };
+  const allerPhoto = i => { st.idx = i; st.crit = premierVide(); draw(); };
   // reprendre à la première photo incomplète
   if (!arg.idx) { const k = D.photos.findIndex(p => [1,2,3,4,5].some(c => notes[p.id+"|"+c] == null)); if (k > 0) st.idx = k; }
 
+  if (st.crit === 0) st.crit = premierVide();
   const totalPhoto = p => { let s=0; for (let c=1;c<=5;c++){ const v=notes[p.id+"|"+c]; if (v==null) return null; s+=v; } return s; };
   const nbNotes = () => D.photos.reduce((a,p)=> a + [1,2,3,4,5].filter(c=>notes[p.id+"|"+c]!=null).length, 0);
 
@@ -541,8 +547,9 @@ async function vueNoter(arg){
         <div class="sujet"><div class="n">PHOTO ${p.numero}${S.ref.edition_sujets==="2025"?' <span style="color:#999">· sujet du règlement 2025</span>':""}</div><h3>${esc(suj.intitule||"")}</h3></div>
         ${suj.consignes?`<details class="consignes"><summary>Consignes du sujet</summary><ul>${suj.consignes.split("\n").map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>`:""}
         ${S.ref.criteres.map((c,ci)=>{ const v = notes[p.id+"|"+c.numero];
-          return `<div class="crit"><div class="ch"><i style="background:${COULEURS_CRIT[ci]}"></i>${esc(c.nom)}<span class="v">${v==null?"-":fmt(v,1)}</span></div>
+          return `<div class="crit ${ci===st.crit && !D.valide?"actif":""}" data-ci="${ci}"><div class="ch"><i style="background:${COULEURS_CRIT[ci]}"></i>${esc(c.nom)}<span class="v">${v==null?"-":fmt(v,1)}</span></div>
           <div class="scale">${VALEURS.map(x=>`<button class="${x%1?"half":""} ${v===x?"on":""}" style="${v===x?`background:${COULEURS_CRIT[ci]}`:""}" data-c="${c.numero}" data-v="${x}" ${D.valide?"disabled":""}>${x%1?String(x).replace(".",","):x}</button>`).join("")}</div></div>`;}).join("")}
+        ${D.valide?"":`<div class="kbd-aide mono">Au clavier : <b>←</b> <b>→</b> baisser / monter la note (départ à 2,5) · <b>↓</b> ou <b>Tab</b> critère suivant · <b>↑</b> critère précédent · <b>Entrée</b> photo suivante</div>`}
         <div class="total"><div><div class="mono" style="font-size:12px;color:#999">NOTE DE LA PHOTO</div><div class="big">${tot==null?"-":fmt(tot,1)}<small> /20</small></div></div><div class="saved" id="saved">${D.valide?"":"Enregistrement automatique"}</div></div>
         <div class="actions">
           ${st.idx<D.photos.length-1?`<button class="btn teal" id="next2" style="flex:1">Photo suivante ›</button>`:""}
@@ -553,9 +560,9 @@ async function vueNoter(arg){
     $("#app").innerHTML = shell(navJuge(), "", body); bindShell();
     $("#back").onclick = () => go("juge-accueil");
     $("#main").onclick = () => lightbox((p.src||p.drive_id));
-    [["#prev",-1],["#next",1],["#next2",1]].forEach(([s,d]) => { const b=$(s); if(b) b.onclick = () => { st.idx+=d; draw(); }; });
-    document.querySelectorAll(".strip [data-i]").forEach(b => b.onclick = () => { st.idx = +b.dataset.i; draw(); });
-    document.querySelectorAll(".scale button").forEach(b => b.onclick = () => noter(p, +b.dataset.c, +b.dataset.v));
+    [["#prev",-1],["#next",1],["#next2",1]].forEach(([s,d]) => { const b=$(s); if(b) b.onclick = () => allerPhoto(st.idx+d); });
+    document.querySelectorAll(".strip [data-i]").forEach(b => b.onclick = () => allerPhoto(+b.dataset.i));
+    document.querySelectorAll(".scale button").forEach(b => b.onclick = () => { st.crit = S.ref.criteres.findIndex(c => c.numero === +b.dataset.c); noter(p, +b.dataset.c, +b.dataset.v); });
     const v = $("#valider"); if (v) v.onclick = valider;
   }
 
@@ -565,6 +572,19 @@ async function vueNoter(arg){
     const s = $("#saved"); s.textContent = "Enregistrement…"; s.className = "saved";
     try { await rpc("pdf_noter", { p_code:S.code, p_photo:p.id, p_critere:c, p_valeur:v }); const s2=$("#saved"); if(s2){ s2.textContent="✓ Enregistré"; s2.className="saved ok"; } }
     catch(e){ notes[k] = avant; draw(); const s2=$("#saved"); if(s2){ s2.textContent="Non enregistré"; s2.className="saved ko"; } toast(e.message, true); }
+  }
+
+  // notation au clavier : la note change tout de suite à l'écran, l'enregistrement part après une courte pause
+  const enAttente = {};
+  function noterClavier(p, c, v){
+    const k = p.id + "|" + c; notes[k] = v; draw();
+    const s = $("#saved"); if (s) { s.textContent = "Enregistrement…"; s.className = "saved"; }
+    clearTimeout(enAttente[k]);
+    enAttente[k] = setTimeout(async () => {
+      delete enAttente[k];
+      try { await rpc("pdf_noter", { p_code:S.code, p_photo:p.id, p_critere:c, p_valeur:notes[k] }); const s2=$("#saved"); if(s2 && !Object.keys(enAttente).length){ s2.textContent="✓ Enregistré"; s2.className="saved ok"; } }
+      catch(e){ const s2=$("#saved"); if(s2){ s2.textContent="Non enregistré"; s2.className="saved ko"; } toast(e.message, true); }
+    }, 450);
   }
 
   async function valider(){
@@ -582,8 +602,31 @@ async function vueNoter(arg){
 
   document.onkeydown = e => {
     if (S.view !== "noter" || document.querySelector(".modal,.lightbox")) return;
-    if (e.key === "ArrowRight" && st.idx < D.photos.length-1) { st.idx++; draw(); }
-    if (e.key === "ArrowLeft" && st.idx > 0) { st.idx--; draw(); }
+    if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    const p = D.photos[st.idx], nb = S.ref.criteres.length;
+    if (e.key === "PageDown") { e.preventDefault(); if (st.idx < D.photos.length-1) allerPhoto(st.idx+1); return; }
+    if (e.key === "PageUp") { e.preventDefault(); if (st.idx > 0) allerPhoto(st.idx-1); return; }
+    if (e.key === "Enter") { e.preventDefault(); if (st.idx < D.photos.length-1) allerPhoto(st.idx+1); else { const v=$("#valider"); if (v) v.click(); } return; }
+    if (D.valide) { if (e.key === "ArrowRight" && st.idx < D.photos.length-1) allerPhoto(st.idx+1); if (e.key === "ArrowLeft" && st.idx > 0) allerPhoto(st.idx-1); return; }
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      const c = S.ref.criteres[st.crit].numero, k = p.id + "|" + c, v = notes[k];
+      let nv = v == null ? 2.5 : v + (e.key === "ArrowRight" ? 0.5 : -0.5);
+      nv = Math.max(0, Math.min(4, nv));
+      if (nv !== v) noterClavier(p, c, nv);
+      return;
+    }
+    if (e.key === "ArrowDown" || (e.key === "Tab" && !e.shiftKey)) {
+      e.preventDefault();
+      if (st.crit < nb-1) { st.crit++; draw(); }
+      else if (st.idx < D.photos.length-1) allerPhoto(st.idx+1);
+      return;
+    }
+    if (e.key === "ArrowUp" || (e.key === "Tab" && e.shiftKey)) {
+      e.preventDefault();
+      if (st.crit > 0) { st.crit--; draw(); }
+      else if (st.idx > 0) { st.idx--; st.crit = nb-1; draw(); }
+    }
   };
   draw();
 }
