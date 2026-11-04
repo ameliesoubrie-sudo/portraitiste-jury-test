@@ -483,6 +483,25 @@ function annonceTest(){
   $("[data-x=ok]", m).onclick = () => m.remove();
 }
 
+/* pop-up à l'ouverture de la première image : test sur des dossiers 2025 */
+function annonceDossiers2025(){
+  const cle = "pdf-avert-2025-" + (S.code || "");
+  try { if (localStorage.getItem(cle)) return; } catch(e){}
+  const m = modal(`<div>
+    <div style="position:relative;width:76px;height:38px;margin-bottom:14px">
+      <div class="q tr" style="--s:38px;left:0;top:0;background:var(--orange)"></div>
+      <div class="q" style="--s:38px;left:38px;top:0;background:var(--teal);border-bottom-right-radius:10px"></div>
+    </div>
+    <div class="mono" style="font-size:12px;color:var(--orange)">À lire avant de commencer</div>
+    <h3>Des dossiers 2025 dans l'outil 2027</h3>
+    <p style="line-height:1.6">Vous allez noter des <b>dossiers de 2025</b> dans une application conçue pour le <b>jugement 2027</b>. Les intitulés affichés au-dessus des images ne correspondent donc pas toujours exactement à la photo : ne vous en inquiétez pas.</p>
+    <p style="line-height:1.6">Pour ce test, <b>notez simplement chaque image sur les 5 critères</b>, sans vous prendre la tête avec l'intitulé.</p>
+    <p style="line-height:1.6">L'affichage en grand des images a été prévu pour ce test : il nous sert à comparer nos façons de noter et à composer les tables le mieux possible. <b>Au jugement de janvier, vous ne jugerez pas sur l'image affichée en grand comme ici.</b></p>
+    <label style="display:flex;gap:8px;align-items:center;font-size:13px;margin-top:6px;cursor:pointer"><input type="checkbox" id="plus"> Ne plus afficher ce message</label>
+    <div class="actions"><button class="btn orange" data-x="ok">C'est compris, je note</button></div></div>`);
+  $("[data-x=ok]", m).onclick = () => { if ($("#plus", m).checked) { try { localStorage.setItem(cle, "1"); } catch(e){} } m.remove(); };
+}
+
 /* ================= JUGE : ACCUEIL ================= */
 async function vueJugeAccueil(){
   $("#app").innerHTML = shell(navJuge(), "juge-accueil", `<div class="wrap"><p class="muted"><span class="spinner"></span> Chargement des dossiers…</p></div>`); bindShell();
@@ -759,6 +778,7 @@ async function vueNoter(arg){
     if (e.key === "ArrowUp" || (e.key === "Tab" && e.shiftKey)) { e.preventDefault(); if (st.crit > 0) { st.crit--; draw(); } }
   };
   draw();
+  if (st.idx === 0 && !D.valide && !S.avert2025) { S.avert2025 = true; annonceDossiers2025(); }
 }
 
 /* ================= COMMENTAIRES DES JUGES (président et super admin) ================= */
