@@ -97,6 +97,7 @@ input,select{font-family:inherit}
 .strip button{flex:0 0 auto;width:62px;height:62px;border-radius:12px;border:2px solid transparent;background:#000 center/cover no-repeat;position:relative;opacity:.55}
 .strip button.on{border-color:var(--yellow);opacity:1}
 .strip button.done{opacity:.9}
+.strip button.verrou{opacity:.18;cursor:not-allowed;filter:grayscale(1)}
 .strip button span{position:absolute;left:4px;bottom:3px;font-family:"Space Mono",monospace;font-size:11px;font-weight:700;background:rgba(0,0,0,.65);padding:1px 5px;border-radius:6px}
 .strip button.done::after{content:"";position:absolute;right:5px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--green)}
 .panel{background:var(--dark2);border-left:1px solid var(--darkline);padding:22px 22px 30px;overflow-y:auto;max-height:calc(100vh - 54px);position:sticky;top:54px}
@@ -505,7 +506,7 @@ async function vueJugeAccueil(){
         <div class="bar"><i style="width:${Math.round(d.nb_notes/60*100)}%"></i></div>
       </button>`;}).join("")}</div></div>`;
   $("#app").innerHTML = shell(navJuge(), "juge-accueil", html); bindShell();
-  document.querySelectorAll("[data-d]").forEach(b => b.onclick = () => go("noter", { id: b.dataset.d, idx: 0 }));
+  document.querySelectorAll("[data-d]").forEach(b => b.onclick = () => go("noter", { id: b.dataset.d }));
   if (!S.annonceVue) { S.annonceVue = true; annonceTest(); }
 }
 
@@ -516,85 +517,166 @@ async function vueNoter(arg){
   try { D = await rpc("pdf_juge_dossier", { p_code: S.code, p_dossier: arg.id }); } catch(e) { toast(e.message, true); return go("juge-accueil"); }
   const notes = {};
   (D.notes||[]).forEach(n => notes[n.photo_id + "|" + n.critere] = Number(n.valeur));
-  const st = { idx: Math.min(arg.idx||0, D.photos.length-1), crit: 0 };
-  const premierVide = () => { const p = D.photos[st.idx]; const k = [1,2,3,4,5].findIndex(c => notes[p.id+"|"+c] == null); return k < 0 ? 0 : k; };
-  const allerPhoto = i => { st.idx = i; st.crit = premierVide(); draw(); };
-  // reprendre à la première photo incomplète
-  if (!arg.idx) { const k = D.photos.findIndex(p => [1,2,3,4,5].some(c => notes[p.id+"|"+c] == null)); if (k > 0) st.idx = k; }
-
-  if (st.crit === 0) st.crit = premierVide();
+  const pv = new Set(D.photos_validees || []);
+  const nbP = D.photos.length;
+  const ouverte = i => D.valide || i === 0 || pv.has(D.photos[i-1].id);
+  const toutesValidees = () => D.photos.every(p => pv.has(p.id));
   const totalPhoto = p => { let s=0; for (let c=1;c<=5;c++){ const v=notes[p.id+"|"+c]; if (v==null) return null; s+=v; } return s; };
   const nbNotes = () => D.photos.reduce((a,p)=> a + [1,2,3,4,5].filter(c=>notes[p.id+"|"+c]!=null).length, 0);
+  const premierVide = i => { const p = D.photos[i]; const k = [1,2,3,4,5].findIndex(c => notes[p.id+"|"+c] == null); return k < 0 ? 0 : k; };
 
-  function draw(){
+  // st.idx = photo affichée ; st.idx = -1 = récapitulatif du dossier
+  const st = { idx: 0, crit: 0 };
+  if (arg.idx != null && arg.idx >= 0 && ouverte(arg.idx)) st.idx = arg.idx;
+  else if (D.valide || toutesValidees()) st.idx = -1;
+  else { const k = D.photos.findIndex(p => !pv.has(p.id)); st.idx = k < 0 ? -1 : k; }
+  if (st.idx >= 0) st.crit = premierVide(st.idx);
+
+  const allerPhoto = i => {
+    if (i < 0 || i >= nbP) return;
+    if (!ouverte(i)) { toast("Validez d'abord les notes de la photo " + D.photos[i-1].numero, true); return; }
+    st.idx = i; st.crit = premierVide(i); draw();
+  };
+  const allerRecap = () => { if (D.valide || toutesValidees()) { st.idx = -1; draw(); } };
+
+  function draw(){ if (st.idx < 0) return drawRecap(); drawPhoto(); }
+
+  function drawPhoto(){
     const p = D.photos[st.idx];
     const suj = S.ref.sujets.find(s => s.numero === p.numero) || {};
-    const tot = totalPhoto(p);
-    const n = nbNotes();
+    const tot = totalPhoto(p), n = nbNotes(), estValidee = pv.has(p.id), finie = toutesValidees();
+    const dernier = st.idx === nbP-1;
+    let action;
+    if (D.valide) action = dernier ? `<button class="btn teal" id="recap" style="flex:1">Récapitulatif du dossier</button>` : `<button class="btn teal" id="suiv" style="flex:1">Photo suivante ›</button>`;
+    else if (!estValidee) action = `<button class="btn orange" id="vphoto" style="flex:1;${tot==null?"opacity:.55":""}">${dernier?"Valider cette photo et voir le récapitulatif":"Valider les notes de cette photo"}</button>`;
+    else if (finie) action = `<button class="btn orange" id="recap" style="flex:1">Retour au récapitulatif</button>`;
+    else action = `<button class="btn teal" id="suiv" style="flex:1">Photo suivante ›</button>`;
     const body = `<div class="room">
       <div class="stage">
         <div class="stage-top"><span class="display">Dossier ${pad(D.numero)}</span><span class="mono">photo ${p.numero} / 12</span>
-          <span class="mono" style="margin-left:auto">${n}/60 notes</span>
+          <span class="mono" style="margin-left:auto">${pv.size}/12 photos validées</span>
+          ${(finie || D.valide)?`<button class="btn ghost sm" id="recapTop" style="color:#ddd">Récapitulatif</button>`:""}
           <button class="btn ghost sm" id="back" style="color:#ddd">Mes dossiers</button></div>
         <div class="stage-img"><span class="load">chargement de l'image…</span>${imgTag((p.src||p.drive_id), 1920, 'id="main" onload="this.previousElementSibling.remove()"')}
           ${st.idx>0?`<button class="navarrow l" id="prev">‹</button>`:""}
-          ${st.idx<D.photos.length-1?`<button class="navarrow r" id="next">›</button>`:""}
+          ${st.idx<nbP-1 && ouverte(st.idx+1)?`<button class="navarrow r" id="next">›</button>`:""}
         </div>
-        <div class="strip">${D.photos.map((q,i)=>`<button class="${i===st.idx?"on":""} ${totalPhoto(q)!=null?"done":""}" data-i="${i}" style="background-image:url('${img((q.src||q.drive_id),200)}'),url('${imgFallback((q.src||q.drive_id),200)}')"><span>${q.numero}</span></button>`).join("")}</div>
+        <div class="strip">${D.photos.map((q,i)=>`<button class="${i===st.idx?"on":""} ${pv.has(q.id)?"done":""} ${ouverte(i)?"":"verrou"}" data-i="${i}" ${ouverte(i)?"":'title="Photo pas encore accessible"'} style="background-image:url('${img((q.src||q.drive_id),200)}'),url('${imgFallback((q.src||q.drive_id),200)}')"><span>${q.numero}</span></button>`).join("")}</div>
       </div>
       <aside class="panel">
-        ${D.valide?`<div class="lock">Dossier validé. Les notes sont verrouillées ; seul l'administrateur peut le rouvrir.</div>`:""}
+        ${D.valide?`<div class="lock">Dossier validé définitivement. Les notes sont verrouillées ; seul l'administrateur peut le rouvrir.</div>`:""}
+        ${!D.valide && estValidee?`<div class="lock" style="background:rgba(155,197,94,.15);color:#cfe6ad">Photo validée. Vous pouvez encore ajuster ses notes jusqu'à la validation définitive du dossier.</div>`:""}
         <div class="sujet"><div class="n">PHOTO ${p.numero}${S.ref.edition_sujets==="2025"?' <span style="color:#999">· sujet du règlement 2025</span>':""}</div><h3>${esc(suj.intitule||"")}</h3></div>
         ${suj.consignes?`<details class="consignes"><summary>Consignes du sujet</summary><ul>${suj.consignes.split("\n").map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>`:""}
         ${S.ref.criteres.map((c,ci)=>{ const v = notes[p.id+"|"+c.numero];
           return `<div class="crit ${ci===st.crit && !D.valide?"actif":""}" data-ci="${ci}"><div class="ch"><i style="background:${COULEURS_CRIT[ci]}"></i>${esc(c.nom)}<span class="v">${v==null?"-":fmt(v,1)}</span></div>
           <div class="scale">${VALEURS.map(x=>`<button class="${x%1?"half":""} ${v===x?"on":""}" style="${v===x?`background:${COULEURS_CRIT[ci]}`:""}" data-c="${c.numero}" data-v="${x}" ${D.valide?"disabled":""}>${x%1?String(x).replace(".",","):x}</button>`).join("")}</div></div>`;}).join("")}
-        ${D.valide?"":`<div class="kbd-aide mono">Au clavier : <b>←</b> <b>→</b> baisser / monter la note (départ à 2,5) · <b>↓</b> ou <b>Tab</b> critère suivant · <b>↑</b> critère précédent · <b>Entrée</b> photo suivante</div>`}
+        ${D.valide?"":`<div class="kbd-aide mono">Au clavier : <b>←</b> <b>→</b> baisser / monter la note (départ à 2,5) · <b>↓</b> ou <b>Tab</b> critère suivant · <b>↑</b> critère précédent · <b>Entrée</b> valider la photo</div>`}
         <div class="total"><div><div class="mono" style="font-size:12px;color:#999">NOTE DE LA PHOTO</div><div class="big">${tot==null?"-":fmt(tot,1)}<small> /20</small></div></div><div class="saved" id="saved">${D.valide?"":"Enregistrement automatique"}</div></div>
-        <div class="actions">
-          ${st.idx<D.photos.length-1?`<button class="btn teal" id="next2" style="flex:1">Photo suivante ›</button>`:""}
-          ${!D.valide && st.idx===D.photos.length-1?`<button class="btn orange" id="valider" style="flex:1">Valider le dossier</button>`:""}
-        </div>
-        ${!D.valide && st.idx<D.photos.length-1 && n===60?`<button class="btn orange" id="valider" style="width:100%;margin-top:10px">Valider le dossier</button>`:""}
+        <div class="actions">${action}</div>
       </aside></div>`;
     $("#app").innerHTML = shell(navJuge(), "", body); bindShell();
     $("#back").onclick = () => go("juge-accueil");
     $("#main").onclick = () => lightbox((p.src||p.drive_id));
-    [["#prev",-1],["#next",1],["#next2",1]].forEach(([s,d]) => { const b=$(s); if(b) b.onclick = () => allerPhoto(st.idx+d); });
+    const on = (s, f) => { const b = $(s); if (b) b.onclick = f; };
+    on("#prev", () => allerPhoto(st.idx-1)); on("#next", () => allerPhoto(st.idx+1)); on("#suiv", () => allerPhoto(st.idx+1));
+    on("#recap", allerRecap); on("#recapTop", allerRecap); on("#vphoto", validerPhoto);
     document.querySelectorAll(".strip [data-i]").forEach(b => b.onclick = () => allerPhoto(+b.dataset.i));
     document.querySelectorAll(".scale button").forEach(b => b.onclick = () => { st.crit = S.ref.criteres.findIndex(c => c.numero === +b.dataset.c); noter(p, +b.dataset.c, +b.dataset.v); });
-    const v = $("#valider"); if (v) v.onclick = valider;
   }
 
+  function drawRecap(){
+    const tots = D.photos.map(totalPhoto);
+    const complet = tots.every(t => t != null);
+    const moy = complet ? tots.reduce((a,b)=>a+b,0)/nbP : null;
+    const minP = complet ? Math.min(...tots) : null;
+    const titre = moy == null ? null : (moy>=16 && minP>=12) ? "ex" : (moy>=14 && minP>=12) ? "ho" : (moy>=12 && minP>=9) ? "pdf" : "no";
+    const sous9 = D.photos.filter((p,i)=>tots[i]!=null && tots[i]<9).map(p=>p.numero);
+    const sous12 = D.photos.filter((p,i)=>tots[i]!=null && tots[i]>=9 && tots[i]<12).map(p=>p.numero);
+    const moyP = (a,b) => { const t = D.photos.map((p,i)=>[p.numero,tots[i]]).filter(([n,t])=>n>=a&&n<=b&&t!=null).map(x=>x[1]); return t.length? t.reduce((x,y)=>x+y,0)/t.length : null; };
+    let verdict = "";
+    if (titre === "no") verdict = moy < 12 ? `Moyenne sous 12/20 : le dossier n'obtient pas le titre selon vos notes.` : `La moyenne atteint 12/20, mais ${sous9.length>1?"les photos":"la photo"} ${sous9.join(", ")} ${sous9.length>1?"sont éliminatoires":"est éliminatoire"} (sous 9/20).`;
+    else if (titre === "pdf") verdict = `Selon vos notes, le dossier obtient le titre Portraitiste de France.` + (moy>=14 && sous12.length ? ` La moyenne permettrait la mention Honneur, mais ${sous12.length>1?"les photos":"la photo"} ${sous12.join(", ")} ${sous12.length>1?"sont":"est"} sous 12/20.` : "");
+    else if (titre === "ho") verdict = `Selon vos notes, le dossier obtient le titre Portraitiste de France Honneur.`;
+    else if (titre === "ex") verdict = `Selon vos notes, le dossier obtient le titre Portraitiste de France Excellence.`;
+    const coul = t => t==null ? "" : t<9 ? "background:#fbe3dc;color:#a63a17;font-weight:700" : t<12 ? "background:#fdf0d5;color:#8a5a00;font-weight:700" : "";
+    const body = `<div class="wrap">
+      <section class="hero" style="margin-bottom:18px">
+        <div class="mono muted" style="font-size:13px">Dossier ${pad(D.numero)} · récapitulatif de vos notes</div>
+        <h2 class="display">${D.valide?"Dossier validé":"Vérifiez avant la validation définitive"}</h2>
+        <p>${D.valide?"Vos notes sont verrouillées.":"Cliquez sur une photo pour la revoir et ajuster ses notes. Une fois le dossier validé définitivement, vous ne pourrez plus y revenir."}</p>
+      </section>
+      <div class="stats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px">
+        <div class="stat" style="background:#fff;border:1px solid var(--line)"><div class="k">${fmt(moy)}<small>/20</small></div><div class="l">Moyenne du dossier</div></div>
+        <div class="stat" style="background:#fff;border:1px solid var(--line)"><div class="k">${fmt(minP,1)}<small>/20</small></div><div class="l">Photo la plus basse</div></div>
+        <div class="stat" style="background:#fff;border:1px solid var(--line)"><div class="k">${fmt(moyP(1,8))}</div><div class="l">Moyenne photos 1 à 8</div></div>
+        <div class="stat" style="background:#fff;border:1px solid var(--line)"><div class="k">${fmt(moyP(9,12))}</div><div class="l">Moyenne photos 9 à 12</div></div>
+        <div class="stat" style="background:var(--orange);color:#fff"><div class="k" style="font-size:22px;line-height:1.2">${titre?TITRES[titre][1]:"-"}</div><div class="l">Selon vos notes</div></div>
+      </div>
+      ${verdict?`<div class="card" style="margin-bottom:18px"><b>${esc(verdict)}</b>${sous9.length&&titre!=="no"?"":""}${sous9.length?`<div class="sub" style="margin-top:6px">Photo éliminatoire (sous 9/20) : ${sous9.join(", ")}.</div>`:""}${sous12.length?`<div class="sub" style="margin-top:4px">Sous 12/20 (bloque Honneur et Excellence) : ${sous12.join(", ")}.</div>`:""}</div>`:""}
+      <div class="card"><h3>Vos notes photo par photo</h3>
+        <div class="scroll"><table><thead><tr><th>Photo</th><th>Sujet</th>${S.ref.criteres.map(c=>`<th class="n" title="${esc(c.nom)}">${esc(c.nom.split(/[ \/]/)[0])}</th>`).join("")}<th class="n">Total /20</th><th></th></tr></thead>
+        <tbody>${D.photos.map((p,i)=>{ const suj = S.ref.sujets.find(s=>s.numero===p.numero)||{}; return `<tr data-i="${i}" style="cursor:pointer">
+          <td class="mono"><b>${p.numero}</b></td><td style="max-width:280px;font-size:13px">${esc(suj.intitule||"")}</td>
+          ${S.ref.criteres.map(c=>`<td class="n mono">${fmt(notes[p.id+"|"+c.numero],1)}</td>`).join("")}
+          <td class="n mono" style="${coul(tots[i])};border-radius:6px">${fmt(tots[i],1)}</td><td class="n"><span class="muted" style="font-size:12px">${D.valide?"voir":"revoir"} ›</span></td></tr>`;}).join("")}</tbody></table></div>
+      </div>
+      <div class="actions" style="display:flex;gap:10px;margin:22px 0 40px">
+        <button class="btn ghost" id="back">Mes dossiers</button>
+        ${D.valide?"":`<button class="btn orange" id="valider" style="flex:1">Validation définitive du dossier ${pad(D.numero)}</button>`}
+      </div></div>`;
+    $("#app").innerHTML = shell(navJuge(), "", body); bindShell();
+    $("#back").onclick = () => go("juge-accueil");
+    document.querySelectorAll("tr[data-i]").forEach(r => r.onclick = () => allerPhoto(+r.dataset.i));
+    const v = $("#valider"); if (v) v.onclick = () => valider(moy);
+  }
+
+  // enregistrement : clic immédiat, clavier après une courte pause
+  const enAttente = {};
+  async function envoyer(p, c){
+    const k = p.id + "|" + c;
+    await rpc("pdf_noter", { p_code:S.code, p_photo:p.id, p_critere:c, p_valeur:notes[k] });
+  }
+  function etat(t, cls){ const s=$("#saved"); if(s){ s.textContent=t; s.className="saved "+(cls||""); } }
   async function noter(p, c, v){
     const k = p.id + "|" + c, avant = notes[k];
-    notes[k] = v; draw();
-    const s = $("#saved"); s.textContent = "Enregistrement…"; s.className = "saved";
-    try { await rpc("pdf_noter", { p_code:S.code, p_photo:p.id, p_critere:c, p_valeur:v }); const s2=$("#saved"); if(s2){ s2.textContent="✓ Enregistré"; s2.className="saved ok"; } }
-    catch(e){ notes[k] = avant; draw(); const s2=$("#saved"); if(s2){ s2.textContent="Non enregistré"; s2.className="saved ko"; } toast(e.message, true); }
+    notes[k] = v; draw(); etat("Enregistrement…");
+    try { await envoyer(p, c); if (!Object.keys(enAttente).length) etat("✓ Enregistré", "ok"); }
+    catch(e){ notes[k] = avant; draw(); etat("Non enregistré", "ko"); toast(e.message, true); }
   }
-
-  // notation au clavier : la note change tout de suite à l'écran, l'enregistrement part après une courte pause
-  const enAttente = {};
   function noterClavier(p, c, v){
-    const k = p.id + "|" + c; notes[k] = v; draw();
-    const s = $("#saved"); if (s) { s.textContent = "Enregistrement…"; s.className = "saved"; }
-    clearTimeout(enAttente[k]);
-    enAttente[k] = setTimeout(async () => {
-      delete enAttente[k];
-      try { await rpc("pdf_noter", { p_code:S.code, p_photo:p.id, p_critere:c, p_valeur:notes[k] }); const s2=$("#saved"); if(s2 && !Object.keys(enAttente).length){ s2.textContent="✓ Enregistré"; s2.className="saved ok"; } }
-      catch(e){ const s2=$("#saved"); if(s2){ s2.textContent="Non enregistré"; s2.className="saved ko"; } toast(e.message, true); }
-    }, 450);
+    const k = p.id + "|" + c; notes[k] = v; draw(); etat("Enregistrement…");
+    clearTimeout(enAttente[k]?.t);
+    const job = { p, c };
+    job.t = setTimeout(() => lancer(k), 450);
+    enAttente[k] = job;
+  }
+  async function lancer(k){
+    const job = enAttente[k]; if (!job) return; clearTimeout(job.t); delete enAttente[k];
+    try { await envoyer(job.p, job.c); if (!Object.keys(enAttente).length) etat("✓ Enregistré", "ok"); }
+    catch(e){ etat("Non enregistré", "ko"); toast(e.message, true); throw e; }
+  }
+  const vider = () => Promise.all(Object.keys(enAttente).map(lancer));
+
+  async function validerPhoto(){
+    const p = D.photos[st.idx];
+    if (totalPhoto(p) == null) {
+      const manq = S.ref.criteres.filter(c => notes[p.id+"|"+c.numero] == null).map(c => c.nom);
+      toast("Il manque : " + manq.join(", "), true);
+      st.crit = S.ref.criteres.findIndex(c => notes[p.id+"|"+c.numero] == null); draw(); return;
+    }
+    try { await vider(); await rpc("pdf_valider_photo", { p_code:S.code, p_photo:p.id }); }
+    catch(e){ toast(e.message, true); return; }
+    pv.add(p.id);
+    if (toutesValidees()) { toast("Les 12 photos sont validées : vérifiez le récapitulatif"); st.idx = -1; draw(); }
+    else { const k = D.photos.findIndex((q,i) => i > st.idx && !pv.has(q.id)); allerPhoto(k < 0 ? D.photos.findIndex(q => !pv.has(q.id)) : k); }
   }
 
-  async function valider(){
-    const n = nbNotes();
-    if (n < 60) { const manq = D.photos.filter(p => totalPhoto(p)==null).map(p=>p.numero); toast(`Il manque des notes sur les photos ${manq.join(", ")}`, true); return; }
-    const tots = D.photos.map(totalPhoto), moy = tots.reduce((a,b)=>a+b,0)/12;
-    const ok = await confirmer("Valider le dossier " + pad(D.numero) + " ?",
+  async function valider(moy){
+    try { await vider(); } catch(e){ return; }
+    const ok = await confirmer("Validation définitive du dossier " + pad(D.numero) + " ?",
       `<p>Votre moyenne pour ce dossier : <b class="mono">${fmt(moy)}/20</b></p>
-       <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;font-size:12px" class="mono">${D.photos.map((p,i)=>`<div style="background:#f3efe8;border-radius:8px;padding:6px;text-align:center">P${p.numero}<br><b>${fmt(tots[i],1)}</b></div>`).join("")}</div>
-       <p class="muted" style="font-size:13px">Une fois validé, vous ne pourrez plus modifier vos notes.</p>`, "Valider définitivement");
+       <p class="muted" style="font-size:13px">Une fois le dossier validé, vous ne pourrez plus revenir dessus ni modifier vos notes.</p>`, "Valider définitivement");
     if (!ok) return;
     try { await rpc("pdf_valider", { p_code:S.code, p_dossier:D.id }); toast("Dossier " + pad(D.numero) + " validé"); go("juge-accueil"); }
     catch(e){ toast(e.message, true); }
@@ -603,11 +685,18 @@ async function vueNoter(arg){
   document.onkeydown = e => {
     if (S.view !== "noter" || document.querySelector(".modal,.lightbox")) return;
     if (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+    if (st.idx < 0) return;
     const p = D.photos[st.idx], nb = S.ref.criteres.length;
-    if (e.key === "PageDown") { e.preventDefault(); if (st.idx < D.photos.length-1) allerPhoto(st.idx+1); return; }
+    if (e.key === "PageDown") { e.preventDefault(); if (st.idx < nbP-1 && ouverte(st.idx+1)) allerPhoto(st.idx+1); return; }
     if (e.key === "PageUp") { e.preventDefault(); if (st.idx > 0) allerPhoto(st.idx-1); return; }
-    if (e.key === "Enter") { e.preventDefault(); if (st.idx < D.photos.length-1) allerPhoto(st.idx+1); else { const v=$("#valider"); if (v) v.click(); } return; }
-    if (D.valide) { if (e.key === "ArrowRight" && st.idx < D.photos.length-1) allerPhoto(st.idx+1); if (e.key === "ArrowLeft" && st.idx > 0) allerPhoto(st.idx-1); return; }
+    if (D.valide) { if (e.key === "ArrowRight") allerPhoto(st.idx+1); if (e.key === "ArrowLeft") allerPhoto(st.idx-1); return; }
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (!pv.has(p.id)) validerPhoto();
+      else if (toutesValidees()) allerRecap();
+      else allerPhoto(st.idx+1);
+      return;
+    }
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
       e.preventDefault();
       const c = S.ref.criteres[st.crit].numero, k = p.id + "|" + c, v = notes[k];
@@ -616,17 +705,8 @@ async function vueNoter(arg){
       if (nv !== v) noterClavier(p, c, nv);
       return;
     }
-    if (e.key === "ArrowDown" || (e.key === "Tab" && !e.shiftKey)) {
-      e.preventDefault();
-      if (st.crit < nb-1) { st.crit++; draw(); }
-      else if (st.idx < D.photos.length-1) allerPhoto(st.idx+1);
-      return;
-    }
-    if (e.key === "ArrowUp" || (e.key === "Tab" && e.shiftKey)) {
-      e.preventDefault();
-      if (st.crit > 0) { st.crit--; draw(); }
-      else if (st.idx > 0) { st.idx--; st.crit = nb-1; draw(); }
-    }
+    if (e.key === "ArrowDown" || (e.key === "Tab" && !e.shiftKey)) { e.preventDefault(); if (st.crit < nb-1) { st.crit++; draw(); } return; }
+    if (e.key === "ArrowUp" || (e.key === "Tab" && e.shiftKey)) { e.preventDefault(); if (st.crit > 0) { st.crit--; draw(); } }
   };
   draw();
 }
