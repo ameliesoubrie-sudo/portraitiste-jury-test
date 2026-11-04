@@ -419,7 +419,7 @@ async function vueCharte(){
       <div class="pad" id="apercu" style="display:flex;align-items:center;justify-content:center;height:110px;margin-top:10px;color:#231f1c;font:italic 600 34px Georgia,'Times New Roman',serif"></div>
       <div class="check"><input type="checkbox" id="lu"><label for="lu" style="all:unset;cursor:pointer">J'ai lu la charte du juge et je m'engage à en respecter les termes.</label></div>
       <div id="manque" class="mono" style="font-size:12px;color:var(--jaune,#F8B135);margin:4px 0 10px;min-height:16px"></div>
-      <button class="btn orange" id="ok" style="width:100%;padding:16px;font-size:16px" disabled>Signer la charte et accéder aux dossiers</button>
+      <button class="btn orange" id="ok" style="width:100%;padding:16px;font-size:16px">Signer la charte et accéder aux dossiers</button>
     </form>
   </div></div>`;
   $("#app").innerHTML = shell([], "", html); bindShell();
@@ -434,17 +434,21 @@ async function vueCharte(){
     if (!$("#qual").value.trim()) manque.push("votre qualité");
     if (!$("#lieu").value.trim()) manque.push("la ville");
     if (!$("#sig").value.trim()) manque.push("la signature (tapez vos prénom et nom)");
-    else if (!okNom) manque.push("une signature identique au nom indiqué plus haut");
+    else if (!okNom) manque.push("une signature qui reprenne le nom indiqué plus haut (" + $("#nom").value.trim() + ")");
     if (!$("#lu").checked) manque.push("la case « J'ai lu la charte »");
-    $("#manque").textContent = manque.length ? "Il manque : " + manque.join(", ") : "";
-    $("#ok").disabled = manque.length > 0;
+    $("#manque").textContent = (tente && manque.length) ? "Il manque : " + manque.join(", ") : "";
+    $("#ok").style.opacity = manque.length ? ".55" : "1";
+    return manque;
   }
-  ["#lu","#lieu","#nom","#qual","#sig"].forEach(s => $(s).addEventListener("input", maj));
-  $("#lu").addEventListener("change", maj);
+  let tente = false;
+  ["#lu","#lieu","#nom","#qual","#sig"].forEach(s => { $(s).addEventListener("input", maj); $(s).addEventListener("change", maj); $(s).addEventListener("keyup", maj); });
+  $("#lu").addEventListener("click", () => setTimeout(maj, 0));
   maj();
 
   $("#fs").onsubmit = async e => {
-    e.preventDefault(); const b = $("#ok"); b.disabled = true; b.innerHTML = `<span class="spinner"></span> Enregistrement…`;
+    e.preventDefault(); tente = true; const manque = maj();
+    if (manque.length) { toast("Il manque : " + manque.join(", "), true); return; }
+    const b = $("#ok"); b.disabled = true; b.innerHTML = `<span class="spinner"></span> Enregistrement…`;
     // image de la signature tapée, conservée avec la déclaration
     const out = document.createElement("canvas"); out.width = 600; out.height = 140;
     const g = out.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0,0,600,140); g.fillStyle = "#231f1c";
