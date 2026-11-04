@@ -621,14 +621,64 @@ async function vueNoter(arg){
           ${S.ref.criteres.map(c=>`<td class="n mono">${fmt(notes[p.id+"|"+c.numero],1)}</td>`).join("")}
           <td class="n mono" style="${coul(tots[i])};border-radius:6px">${fmt(tots[i],1)}</td><td class="n"><span class="muted" style="font-size:12px">${D.valide?"voir":"revoir"} ›</span></td></tr>`;}).join("")}</tbody></table></div>
       </div>
+      <div class="card" style="margin-top:18px"><h3>Votre commentaire sur ce dossier</h3>
+        <div class="sub">${D.valide?"Commentaire transmis avec le dossier.":"Une remarque sur ce dossier ? Écrivez-la ou dictez-la : elle servira au retour fait au candidat. Facultatif."}</div>
+        ${D.valide?`<p style="white-space:pre-wrap;margin:12px 0 0">${D.commentaire?esc(D.commentaire):'<span class="muted">Aucun commentaire.</span>'}</p>`:`
+        <textarea id="com" rows="5" maxlength="5000" placeholder="Vos remarques sur le dossier (points forts, axes de progression…)" style="width:100%;margin-top:12px;padding:14px;border-radius:14px;border:1px solid var(--line);font:inherit;font-size:15px;line-height:1.5;resize:vertical">${esc(D.commentaire||"")}</textarea>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn sm" id="dicter" type="button" style="display:none">🎤 Dicter</button>
+          <span class="muted" id="dicteAide" style="font-size:12px"></span>
+          <span class="saved" id="comEtat" style="margin-left:auto"></span>
+        </div>`}
+      </div>
       <div class="actions" style="display:flex;gap:10px;margin:22px 0 40px">
         <button class="btn ghost" id="back">Mes dossiers</button>
         ${D.valide?"":`<button class="btn orange" id="valider" style="flex:1">Validation définitive du dossier ${pad(D.numero)}</button>`}
       </div></div>`;
     $("#app").innerHTML = shell(navJuge(), "", body); bindShell();
     $("#back").onclick = () => go("juge-accueil");
-    document.querySelectorAll("tr[data-i]").forEach(r => r.onclick = () => allerPhoto(+r.dataset.i));
+    document.querySelectorAll("tr[data-i]").forEach(r => r.onclick = () => { if ($("#com")) sauverCommentaire().catch(()=>{}); allerPhoto(+r.dataset.i); });
+    $("#back").onclick = () => { if ($("#com")) sauverCommentaire().catch(()=>{}); go("juge-accueil"); };
     const v = $("#valider"); if (v) v.onclick = () => valider(moy);
+    if (!D.valide) brancherCommentaire();
+  }
+
+  // commentaire du juge : enregistré automatiquement, saisi au clavier ou dicté
+  let comTimer = null, comEnvoi = Promise.resolve();
+  function sauverCommentaire(){
+    clearTimeout(comTimer); comTimer = null;
+    const t = $("#com") ? $("#com").value : (D.commentaire || "");
+    if ((t || "") === (D.commentaireEnregistre ?? D.commentaire ?? "")) return comEnvoi;
+    const e = $("#comEtat"); if (e) { e.textContent = "Enregistrement…"; e.className = "saved"; }
+    comEnvoi = rpc("pdf_commenter", { p_code:S.code, p_dossier:D.id, p_texte:t })
+      .then(() => { D.commentaire = t; D.commentaireEnregistre = t; const e2=$("#comEtat"); if (e2) { e2.textContent = "✓ Commentaire enregistré"; e2.className = "saved ok"; } })
+      .catch(err => { const e2=$("#comEtat"); if (e2) { e2.textContent = "Non enregistré"; e2.className = "saved ko"; } toast(err.message, true); throw err; });
+    return comEnvoi;
+  }
+  function brancherCommentaire(){
+    const ta = $("#com"); if (!ta) return;
+    D.commentaireEnregistre ??= (D.commentaire || "");
+    ta.addEventListener("input", () => { D.commentaire = ta.value; clearTimeout(comTimer); comTimer = setTimeout(sauverCommentaire, 900); });
+    ta.addEventListener("blur", sauverCommentaire);
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const btn = $("#dicter"), aide = $("#dicteAide");
+    if (!SR) { aide.textContent = "Pour dicter : utilisez le micro du clavier de votre téléphone ou tablette, ou la dictée de votre ordinateur."; return; }
+    btn.style.display = "";
+    let rec = null, base = "";
+    btn.onclick = () => {
+      if (rec) { rec.stop(); return; }
+      rec = new SR(); rec.lang = "fr-FR"; rec.continuous = true; rec.interimResults = true;
+      base = ta.value ? ta.value.replace(/\s*$/, "") + " " : "";
+      rec.onresult = ev => {
+        let fin = "", prov = "";
+        for (let i = 0; i < ev.results.length; i++) { const r = ev.results[i]; (r.isFinal ? (fin += r[0].transcript) : (prov += r[0].transcript)); }
+        ta.value = base + fin + prov; D.commentaire = ta.value;
+      };
+      rec.onerror = ev => { if (ev.error === "not-allowed" || ev.error === "service-not-allowed") toast("Autorisez l'accès au micro pour dicter", true); };
+      rec.onend = () => { rec = null; btn.textContent = "🎤 Dicter"; btn.classList.remove("orange"); aide.textContent = ""; sauverCommentaire(); };
+      try { rec.start(); btn.textContent = "■ Arrêter la dictée"; btn.classList.add("orange"); aide.textContent = "Parlez, le texte s'écrit au fur et à mesure…"; }
+      catch(e){ rec = null; toast("Dictée indisponible sur ce navigateur", true); }
+    };
   }
 
   // enregistrement : clic immédiat, clavier après une courte pause
@@ -673,7 +723,7 @@ async function vueNoter(arg){
   }
 
   async function valider(moy){
-    try { await vider(); } catch(e){ return; }
+    try { await vider(); await sauverCommentaire(); } catch(e){ return; }
     const ok = await confirmer("Validation définitive du dossier " + pad(D.numero) + " ?",
       `<p>Votre moyenne pour ce dossier : <b class="mono">${fmt(moy)}/20</b></p>
        <p class="muted" style="font-size:13px">Une fois le dossier validé, vous ne pourrez plus revenir dessus ni modifier vos notes.</p>`, "Valider définitivement");
@@ -709,6 +759,21 @@ async function vueNoter(arg){
     if (e.key === "ArrowUp" || (e.key === "Tab" && e.shiftKey)) { e.preventDefault(); if (st.crit > 0) { st.crit--; draw(); } }
   };
   draw();
+}
+
+/* ================= COMMENTAIRES DES JUGES (président et super admin) ================= */
+async function ajouterCommentaires(){
+  const vue = S.view, w = document.querySelector("#app .wrap"); if (!w) return;
+  let L; try { L = await rpc("pdf_commentaires", { p_code:S.code }); } catch(e){ return; }
+  if (S.view !== vue) return;
+  const par = {}; (L||[]).forEach(c => (par[c.numero] ||= { nom:c.nom, l:[] }).l.push(c));
+  const nums = Object.keys(par).map(Number).sort((a,b)=>a-b);
+  const card = document.createElement("div"); card.className = "card"; card.style.marginTop = "18px";
+  card.innerHTML = `<h3>Commentaires des juges</h3><div class="sub">Remarques laissées par les juges sur chaque dossier, pour le retour aux candidats.</div>
+    ${nums.length ? nums.map(n => `<div style="margin-top:16px"><div class="mono" style="font-weight:700">Dossier ${pad(n)}${par[n].nom?` · ${esc(par[n].nom)}`:""}</div>
+      ${par[n].l.map(c => `<div style="border-left:3px solid var(--teal);padding:6px 12px;margin-top:8px"><div class="muted" style="font-size:12px">${esc(c.juge)}${c.valide?"":" · dossier pas encore validé"}</div><div style="white-space:pre-wrap">${esc(c.texte)}</div></div>`).join("")}</div>`).join("")
+    : `<p class="muted" style="margin-top:12px">Aucun commentaire pour l'instant.</p>`}`;
+  w.appendChild(card);
 }
 
 /* ================= CALCULS ================= */
@@ -809,7 +874,7 @@ async function vueJury(){
         <td style="font-size:12px">${C.juges.filter(j=>C.pt[j.id]?.[a.p.id]!=null).map(j=>`${esc(j.nom)} <b class="mono">${fmt(C.pt[j.id][a.p.id],1)}</b>`).join(" · ")}</td>
         <td><button class="btn ghost sm" data-lb="${(a.p.src||a.p.drive_id)}">Voir</button></td></tr>`).join("")}</tbody></table></div>` : `<p class="muted">Aucune grosse disparité pour l'instant.</p>`}
     </div></div>`;
-  $("#app").innerHTML = shell(navCourante(), "vue-jury", html); bindShell();
+  $("#app").innerHTML = shell(navCourante(), "vue-jury", html); bindShell(); ajouterCommentaires();
   document.querySelectorAll("[data-lb]").forEach(b => b.onclick = () => lightbox(b.dataset.lb));
 }
 
@@ -891,7 +956,7 @@ async function vueResultats(){
         ${seuil2!=null?`<td>${d.moy!=null&&d.moy>=seuil2?'<span class="pill st">Qualifié</span>':""}</td>`:""}
         <td class="n">${fmt(d.note_2025,3)}</td><td class="n">${d.moy!=null&&d.note_2025!=null?((d.moy-d.note_2025>0?"+":"")+fmt(d.moy-d.note_2025)):"-"}</td></tr>`).join("")}</tbody></table></div>
     </div></div>`;
-  $("#app").innerHTML = shell(NAV_ADMIN, "admin-resultats", html); bindShell();
+  $("#app").innerHTML = shell(NAV_ADMIN, "admin-resultats", html); bindShell(); ajouterCommentaires();
 }
 
 /* ================= ADMIN : AVANCEMENT ================= */
