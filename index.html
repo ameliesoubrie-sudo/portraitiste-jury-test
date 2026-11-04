@@ -418,17 +418,26 @@ async function vueCharte(){
       <input type="text" id="sig" placeholder="${esc(j.prenom+" "+j.nom)}" autocomplete="off">
       <div class="pad" id="apercu" style="display:flex;align-items:center;justify-content:center;height:110px;margin-top:10px;color:#231f1c;font:italic 600 34px Georgia,'Times New Roman',serif"></div>
       <div class="check"><input type="checkbox" id="lu"><label for="lu" style="all:unset;cursor:pointer">J'ai lu la charte du juge et je m'engage à en respecter les termes.</label></div>
+      <div id="manque" class="mono" style="font-size:12px;color:var(--jaune,#F8B135);margin:4px 0 10px;min-height:16px"></div>
       <button class="btn orange" id="ok" style="width:100%;padding:16px;font-size:16px" disabled>Signer la charte et accéder aux dossiers</button>
     </form>
   </div></div>`;
   $("#app").innerHTML = shell([], "", html); bindShell();
 
   // signature tapée au clavier : elle doit reprendre le nom de la déclaration
-  const norm = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\s+/g," ").trim().toLowerCase();
+  const norm = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\([^)]*\)/g," ").replace(/[^a-z0-9]+/gi," ").trim().toLowerCase();
   function maj(){
     $("#apercu").textContent = $("#sig").value;
-    const okNom = $("#sig").value.trim() && norm($("#sig").value) === norm($("#nom").value);
-    $("#ok").disabled = !(okNom && $("#lu").checked && $("#lieu").value.trim() && $("#nom").value.trim() && $("#qual").value.trim());
+    const okNom = !!$("#sig").value.trim() && norm($("#sig").value) === norm($("#nom").value);
+    const manque = [];
+    if (!$("#nom").value.trim()) manque.push("votre nom");
+    if (!$("#qual").value.trim()) manque.push("votre qualité");
+    if (!$("#lieu").value.trim()) manque.push("la ville");
+    if (!$("#sig").value.trim()) manque.push("la signature (tapez vos prénom et nom)");
+    else if (!okNom) manque.push("une signature identique au nom indiqué plus haut");
+    if (!$("#lu").checked) manque.push("la case « J'ai lu la charte »");
+    $("#manque").textContent = manque.length ? "Il manque : " + manque.join(", ") : "";
+    $("#ok").disabled = manque.length > 0;
   }
   ["#lu","#lieu","#nom","#qual","#sig"].forEach(s => $(s).addEventListener("input", maj));
   $("#lu").addEventListener("change", maj);
