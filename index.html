@@ -502,6 +502,24 @@ function annonceDossiers2025(){
   $("[data-x=ok]", m).onclick = () => { if ($("#plus", m).checked) { try { localStorage.setItem(cle, "1"); } catch(e){} } m.remove(); };
 }
 
+/* pop-up au critère « traitement de l'image / qualité du tirage » */
+function annonceTirage(){
+  const cle = "pdf-avert-tirage-" + (S.code || "");
+  try { if (localStorage.getItem(cle)) return; } catch(e){}
+  const m = modal(`<div>
+    <div style="position:relative;width:76px;height:38px;margin-bottom:14px">
+      <div class="q tr" style="--s:38px;left:0;top:0;background:#b49a86"></div>
+      <div class="q" style="--s:38px;left:38px;top:0;background:var(--yellow);border-bottom-right-radius:10px"></div>
+    </div>
+    <div class="mono" style="font-size:12px;color:var(--orange)">Critère 5 · pendant ce test</div>
+    <h3>Traitement de l'image / qualité du tirage</h3>
+    <p style="line-height:1.6">Pour ce critère, vous ne pouvez pas évaluer la <b>qualité du tirage</b> : les images sont vues à l'écran.</p>
+    <p style="line-height:1.6">Vous pouvez en revanche évaluer la <b>qualité de la post-production</b>. <b>Basez votre note uniquement sur la post-production.</b></p>
+    <label style="display:flex;gap:8px;align-items:center;font-size:13px;margin-top:6px;cursor:pointer"><input type="checkbox" id="plus"> Ne plus afficher ce message</label>
+    <div class="actions"><button class="btn orange" data-x="ok">C'est noté</button></div></div>`);
+  $("[data-x=ok]", m).onclick = () => { if ($("#plus", m).checked) { try { localStorage.setItem(cle, "1"); } catch(e){} } m.remove(); };
+}
+
 /* ================= JUGE : ACCUEIL ================= */
 async function vueJugeAccueil(){
   $("#app").innerHTML = shell(navJuge(), "juge-accueil", `<div class="wrap"><p class="muted"><span class="spinner"></span> Chargement des dossiers…</p></div>`); bindShell();
@@ -589,6 +607,7 @@ async function vueNoter(arg){
         ${suj.consignes?`<details class="consignes"><summary>Consignes du sujet</summary><ul>${suj.consignes.split("\n").map(l=>`<li>${esc(l)}</li>`).join("")}</ul></details>`:""}
         ${S.ref.criteres.map((c,ci)=>{ const v = notes[p.id+"|"+c.numero];
           return `<div class="crit ${ci===st.crit && !D.valide?"actif":""}" data-ci="${ci}"><div class="ch"><i style="background:${COULEURS_CRIT[ci]}"></i>${esc(c.nom)}<span class="v">${v==null?"-":fmt(v,1)}</span></div>
+          ${ci===S.ref.criteres.length-1?`<div class="mono" style="font-size:11px;color:#9a9a9a;margin:-4px 0 6px">Pour ce test : notez la post-production uniquement</div>`:""}
           <div class="scale">${VALEURS.map(x=>`<button class="${x%1?"half":""} ${v===x?"on":""}" style="${v===x?`background:${COULEURS_CRIT[ci]}`:""}" data-c="${c.numero}" data-v="${x}" ${D.valide?"disabled":""}>${x%1?String(x).replace(".",","):x}</button>`).join("")}</div></div>`;}).join("")}
         ${D.valide?"":`<div class="kbd-aide mono">Au clavier : <b>←</b> <b>→</b> baisser / monter la note (départ à 2,5) · <b>↓</b> ou <b>Tab</b> critère suivant · <b>↑</b> critère précédent · <b>Entrée</b> valider la photo</div>`}
         <div class="total"><div><div class="mono" style="font-size:12px;color:#999">NOTE DE LA PHOTO</div><div class="big">${tot==null?"-":fmt(tot,1)}<small> /20</small></div></div><div class="saved" id="saved">${D.valide?"":"Enregistrement automatique"}</div></div>
@@ -602,6 +621,7 @@ async function vueNoter(arg){
     on("#recap", allerRecap); on("#recapTop", allerRecap); on("#vphoto", validerPhoto);
     document.querySelectorAll(".strip [data-i]").forEach(b => b.onclick = () => allerPhoto(+b.dataset.i));
     document.querySelectorAll(".scale button").forEach(b => b.onclick = () => { st.crit = S.ref.criteres.findIndex(c => c.numero === +b.dataset.c); noter(p, +b.dataset.c, +b.dataset.v); });
+    if (st.idx === 0 && st.crit === S.ref.criteres.length-1 && !D.valide && !S.avertTirage && !document.querySelector(".modal")) { S.avertTirage = true; annonceTirage(); }
   }
 
   function drawRecap(){
